@@ -7,7 +7,9 @@
     "eval:prepare": "node scripts/evaluate-dialogue.mjs --dry-run",
     "eval:dialogue": "node scripts/evaluate-dialogue.mjs",
     "eval:ollama": "node scripts/benchmark-ollama.mjs",
-    "eval:story": "node scripts/evaluate-personality-story.mjs"
+    "eval:story": "node scripts/evaluate-personality-story.mjs",
+    "eval:grounding": "node scripts/evaluate-grounding.mjs",
+    "eval:facts": "node scripts/evaluate-fact-routing.mjs"
   },
   "engines": {
     "node": ">=22"

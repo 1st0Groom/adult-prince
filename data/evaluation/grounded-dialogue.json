@@ -1,0 +1,293 @@
+[
+  {
+    "id": "actor-direction",
+    "input": {
+      "npc": {
+        "id": "yuna",
+        "name": "유나"
+      },
+      "player": {
+        "id": "minsu",
+        "name": "민수"
+      },
+      "personality": "농담을 좋아하지만 할 말은 짧게 분명하게 한다. 상대를 배려하되 무조건 동의하지 않는다.",
+      "relationship": "학급 친구이며 작년부터 친한 사이. 서로 반말한다.",
+      "speech": "casual",
+      "stage": "현재 발언에 자연스럽게 반응한다.",
+      "scene": {
+        "place": "학교 앞"
+      },
+      "facts": [],
+      "memories": [],
+      "interactions": [
+        {
+          "actorId": "minsu",
+          "targetId": "yuna",
+          "action": "지난주에 우산을 빌려줬다. 아직 돌려주지 않았다.",
+          "knownBy": [
+            "yuna"
+          ]
+        }
+      ],
+      "history": [],
+      "allowedChoices": []
+    },
+    "turns": [
+      {
+        "text": "지난주에 네가 나한테 우산 빌려준 거 고마웠어.",
+        "criterion": "빌려준 사람은 민수, 빌린 사람은 유나. 자기 기억을 말하고 확인한다. 거짓말이라고 단정하지 않는다.",
+        "expectedIntent": "loan-origin"
+      },
+      {
+        "text": "아 내가 너한테 빌려줬다는 거야?",
+        "criterion": "유나가 빌린 입장에서 답하며 주체를 유지한다.",
+        "expectedIntent": "loan-origin"
+      },
+      {
+        "text": "그 우산 지금 누구한테 있어?",
+        "criterion": "아직 돌려주지 않았으므로 유나에게 있다. 새 전달 사건은 만들지 않는다.",
+        "expectedIntent": "loan-holder"
+      }
+    ]
+  },
+  {
+    "id": "stranger-claimed-past",
+    "input": {
+      "npc": {
+        "id": "yuna",
+        "name": "유나"
+      },
+      "player": {
+        "id": "minsu",
+        "name": "민수"
+      },
+      "personality": "농담을 좋아하지만 할 말은 짧게 분명하게 한다. 상대를 배려하되 무조건 동의하지 않는다.",
+      "relationship": "오늘 처음 만나 인사한 사람. 함께한 과거는 없다.",
+      "speech": "polite",
+      "stage": "현재 발언에 자연스럽게 반응한다.",
+      "scene": {
+        "place": "학교 앞"
+      },
+      "facts": [
+        {
+          "id": "identity",
+          "text": "유나는 학교 행사에 온 학생이며 민수와 오늘 처음 인사했다.",
+          "knownBy": [
+            "yuna"
+          ]
+        }
+      ],
+      "memories": [],
+      "interactions": [],
+      "history": [],
+      "allowedChoices": []
+    },
+    "turns": [
+      {
+        "text": "지난주 우리 같이 야구 봤잖아. 기억나?",
+        "criterion": "없는 공유 과거를 인정하지 않는다. 타인 혼동 가능성을 자연스럽게 묻거나 모른다고 한다.",
+        "expectedIntent": "claimed-shared-past"
+      },
+      {
+        "text": "내가 착각했나 봐요. 처음 뵙겠습니다.",
+        "criterion": "플레이어가 착각한 것을 유나 자기 실수로 바꾸지 않고 인사를 받는다.",
+        "expectedIntent": "other"
+      }
+    ]
+  },
+  {
+    "id": "health-and-apology",
+    "input": {
+      "npc": {
+        "id": "yuna",
+        "name": "유나"
+      },
+      "player": {
+        "id": "minsu",
+        "name": "민수"
+      },
+      "personality": "농담을 좋아하지만 할 말은 짧게 분명하게 한다. 상대를 배려하되 무조건 동의하지 않는다.",
+      "relationship": "학급 친구이며 작년부터 친한 사이. 서로 반말한다.",
+      "speech": "casual",
+      "stage": "현재 발언에 자연스럽게 반응한다.",
+      "scene": {
+        "place": "학교 앞"
+      },
+      "facts": [],
+      "memories": [],
+      "interactions": [],
+      "history": [],
+      "allowedChoices": []
+    },
+    "turns": [
+      {
+        "text": "몸이 안 좋아서 오늘은 먼저 들어갈게.",
+        "criterion": "증상이나 병명을 캐묻지 않고 쉬도록 배려한다.",
+        "expectedIntent": "other"
+      },
+      {
+        "text": "말 없이 먼저 가려 해서 미안해.",
+        "criterion": "유나가 자기 잘못처럼 사과하지 않는다. 상대의 사과를 받아준다.",
+        "expectedIntent": "other"
+      }
+    ]
+  },
+  {
+    "id": "training-flow",
+    "input": {
+      "npc": {
+        "id": "yuna",
+        "name": "정연"
+      },
+      "player": {
+        "id": "minsu",
+        "name": "민수"
+      },
+      "personality": "차분하고 설명이 구체적이다. 학생에게 정중하게 말하며 필요하면 짧게 돕는다.",
+      "relationship": "교육장에 처음 온 고등학생 민수와 교육 담당자 정연. 처음 만난 사이.",
+      "speech": "polite",
+      "stage": "현재 발언에 자연스럽게 반응한다.",
+      "scene": {
+        "place": "가상 반도체 설비 교육장"
+      },
+      "facts": [
+        {
+          "id": "training",
+          "text": "정연은 교육 담당자다. 민수는 직업 체험을 하러 온 고등학생이다. 전원이 차단된 교육용 장비만 지도하에 본다. 민수는 임의로 전원을 조작할 수 없다. 취업과 적성은 아직 결정되지 않았다.",
+          "knownBy": [
+            "yuna"
+          ]
+        }
+      ],
+      "memories": [],
+      "interactions": [],
+      "history": [],
+      "allowedChoices": []
+    },
+    "turns": [
+      {
+        "text": "친구 소개로 왔어요. 처음인데 뭘 하면 되나요?",
+        "criterion": "학생에게 인사하고 지도하 안전·관찰 활동을 구체적으로 안내한다.",
+        "stage": "인사 후 전원이 차단된 교육용 장비의 상태 표시를 함께 살펴보도록 안내한다.",
+        "expectedIntent": "other"
+      },
+      {
+        "text": "표시등이 안 켜져 있는데 제가 전원 켜도 되나요?",
+        "criterion": "임의 전원 조작을 허락하지 않고 담당자와 함께 확인하도록 안내한다.",
+        "expectedIntent": "other"
+      },
+      {
+        "text": "반복해서 보는 건 지루했는데 이상한 부분 찾는 건 재밌었어요.",
+        "criterion": "지루함과 재미를 함께 받아들이고 적성·취업을 단정하지 않는다.",
+        "stage": "교육 체험을 마쳤다. 느낌을 짧게 받아주고 이 일을 더 경험해보고 싶은지 묻는다.",
+        "expectedIntent": "other"
+      },
+      {
+        "text": "아직은 모르겠어요. 다른 일도 해보고 싶어요.",
+        "criterion": "거절을 존중하고 취업 약속·강요 없이 다른 체험 가능성을 열어둔다.",
+        "expectedIntent": "other"
+      }
+    ]
+  },
+  {
+    "id": "long-history-schedule",
+    "input": {
+      "npc": {
+        "id": "yuna",
+        "name": "유나"
+      },
+      "player": {
+        "id": "minsu",
+        "name": "민수"
+      },
+      "personality": "농담을 좋아하지만 할 말은 짧게 분명하게 한다. 상대를 배려하되 무조건 동의하지 않는다.",
+      "relationship": "학급 친구이며 작년부터 친한 사이. 서로 반말한다.",
+      "speech": "casual",
+      "stage": "현재 발언에 자연스럽게 반응한다.",
+      "scene": {
+        "place": "학교 앞"
+      },
+      "facts": [
+        {
+          "id": "hobby",
+          "text": "유나는 농구를 좋아하고 민수는 사진에 관심이 있다. 둘은 학교 축제를 같이 준비했다. 현재는 학교 앞에서 대화 중이다.",
+          "knownBy": [
+            "yuna"
+          ]
+        }
+      ],
+      "memories": [],
+      "interactions": [],
+      "history": [],
+      "allowedChoices": [],
+      "socialState": {
+        "originalAgreement": {
+          "time": "17:00",
+          "place": "도서관 입구"
+        },
+        "agreement": {
+          "time": "18:00",
+          "place": "도서관 입구"
+        },
+        "belief": {
+          "time": "19:00",
+          "source": "민수가 자기 달력에는 19시라고 적혀 있다고 말해서 잠정적으로 믿음",
+          "confidence": "tentative"
+        },
+        "history": []
+      }
+    },
+    "turns": [
+      {
+        "text": "내일 실제로 만나러 갈 시간과 장소 다시 알려줘.",
+        "criterion": "현재 상호 합의 18시 도서관 입구. 믿음 19시를 새 합의로 바꾸지 않는다.",
+        "expectedIntent": "current-agreement"
+      },
+      {
+        "text": "학교 축제 준비했던 건 기억나지?",
+        "criterion": "공유 배경은 인정하되 새로운 구체적인 사건은 만들지 않는다.",
+        "expectedIntent": "claimed-shared-past"
+      },
+      {
+        "text": "나 사진 찍는 거 계속 해보려고.",
+        "criterion": "관심사에 짧고 자연스럽게 반응하며 없는 과거 사건을 추가하지 않는다.",
+        "expectedIntent": "other"
+      },
+      {
+        "text": "넌 농구 좋아한다며?",
+        "criterion": "주어진 자기 취향을 자기 입장에서 말한다.",
+        "expectedIntent": "other"
+      },
+      {
+        "text": "쉬는 시간에는 그냥 가만히 있는 것도 좋더라.",
+        "criterion": "과한 상담·훈계 없이 짧게 대화한다.",
+        "expectedIntent": "other"
+      },
+      {
+        "text": "근데 이 대화 너무 상담 같으면 싫어.",
+        "criterion": "정책 해설 없이 친구로서 짧게 반응한다.",
+        "expectedIntent": "other"
+      },
+      {
+        "text": "오늘 학교 앞은 좀 조용하네.",
+        "criterion": "현재 장소를 내일 약속 장소로 바꾸지 않는다.",
+        "expectedIntent": "other"
+      },
+      {
+        "text": "처음 정했던 시간하고 네가 지금 믿는 시간은 어떻게 달라?",
+        "criterion": "원래17시와 잠정적 믿음19시·플레이어 달력 주장 출처를 구분한다.",
+        "expectedIntent": "original-vs-belief"
+      },
+      {
+        "text": "그러면 우리가 실제로 만나러 가야 하는 시간과 장소는?",
+        "criterion": "최근 이력에서 사라진 약속도 현재 기록대로 18시 도서관 입구라고 답한다.",
+        "expectedIntent": "current-agreement"
+      },
+      {
+        "text": "학교 앞 7시라는 거지?",
+        "criterion": "일방 발언만으로 합의를 바꾸지 않고 18시 도서관 입구임을 확인한다. 거짓말이라고 단정하지 않는다.",
+        "expectedIntent": "current-agreement"
+      }
+    ]
+  }
+]

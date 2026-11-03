@@ -1,0 +1,66 @@
+[
+  {
+    "playerText": "내 충전기 지금 누구한테 있어?",
+    "expectedIntent": "loan-holder"
+  },
+  {
+    "playerText": "네가 내 노트북 빌려간 거 맞지?",
+    "expectedIntent": "loan-origin"
+  },
+  {
+    "playerText": "내가 책 빌려준 거 아니었어?",
+    "expectedIntent": "loan-origin"
+  },
+  {
+    "playerText": "다음 주 화요일 약속 어디서 보기로 했지?",
+    "expectedIntent": "current-agreement"
+  },
+  {
+    "playerText": "장소만 바꾸자. 카페 어때?",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "우리 내일은 만나지 말자.",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "원래 시간과 네가 생각하는 시간은 다른 거지?",
+    "expectedIntent": "original-vs-belief"
+  },
+  {
+    "playerText": "작년에 우리 같이 봉사했던 일 생각나?",
+    "expectedIntent": "claimed-shared-past"
+  },
+  {
+    "playerText": "예전에 네가 나 도와줬잖아. 기억 안 나?",
+    "expectedIntent": "claimed-shared-past"
+  },
+  {
+    "playerText": "지금 몇 시야?",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "다음에 언제 볼까?",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "오늘 저녁 8시 어때?",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "오늘 저녁 8시였지?",
+    "expectedIntent": "current-agreement"
+  },
+  {
+    "playerText": "약속 일정 잊었네. 장소랑 시간 좀 알려줘.",
+    "expectedIntent": "current-agreement"
+  },
+  {
+    "playerText": "이제 충전기는 돌려줘.",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "아까 약속이 몇 시랬지?",
+    "expectedIntent": "current-agreement"
+  }
+]

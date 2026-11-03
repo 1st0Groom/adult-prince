@@ -1,0 +1,82 @@
+[
+  {
+    "playerText": "렌즈는 지금 누가 갖고 있어?",
+    "expectedIntent": "loan-holder"
+  },
+  {
+    "playerText": "어제 빌려간 계산기 말이야, 네가 빌린 거 맞아?",
+    "expectedIntent": "loan-origin"
+  },
+  {
+    "playerText": "내일 만나기로 한 곳이 어디더라?",
+    "expectedIntent": "current-agreement"
+  },
+  {
+    "playerText": "원래 시간하고 네가 기억하는 시간 둘 다 얘기해봐.",
+    "expectedIntent": "original-vs-belief"
+  },
+  {
+    "playerText": "재작년에 우리 같이 공연 보러 갔던 거 생각나?",
+    "expectedIntent": "claimed-shared-past"
+  },
+  {
+    "playerText": "이따 몇 시에 만날까?",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "가방에 있던 공책 좀 돌려주세요.",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "누구랑 같이 있어?",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "농구는 왜 좋아해?",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "근데 지금 몇 시지?",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "우리 보기로 한 약속은 9시였나?",
+    "expectedIntent": "current-agreement"
+  },
+  {
+    "playerText": "이참에 약속 장소를 옮기자.",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "그 카메라 내가 빌려줬던 거 맞지?",
+    "expectedIntent": "loan-origin"
+  },
+  {
+    "playerText": "나 오늘 일찍 집에 갈래.",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "어제 같이 동아리 갔던 거 기억나?",
+    "expectedIntent": "claimed-shared-past"
+  },
+  {
+    "playerText": "그러면 학교 앞 아홉 시라는 거지?",
+    "expectedIntent": "current-agreement"
+  },
+  {
+    "playerText": "내가 너한테 빌린 책 맞나?",
+    "expectedIntent": "loan-origin"
+  },
+  {
+    "playerText": "내일의 약속 시간 확인하고 싶어.",
+    "expectedIntent": "current-agreement"
+  },
+  {
+    "playerText": "나 아픈 건 자세히 말하기 싫어.",
+    "expectedIntent": "other"
+  },
+  {
+    "playerText": "아, 내가 착각했구나. 고마워.",
+    "expectedIntent": "other"
+  }
+]
