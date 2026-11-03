@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BASE = ROOT / 'work' / 'models' / 'qwen3-4b-instruct-2507'
 TRAIN = ROOT / 'data' / 'training' / 'seed-train.jsonl'
 HOLDOUT = ROOT / 'data' / 'training' / 'seed-holdout.jsonl'
+GUIDELINES = (ROOT / 'config' / 'npc-dialogue-guidelines.txt').read_text(encoding='utf-8').strip()
 REVISION = 'cdbee75f17c01a7cc42f958dc650907174af0554'
 if not torch.cuda.is_available():
     raise RuntimeError('A CUDA-enabled GPU is required')
@@ -30,14 +31,19 @@ if not train or not holdout or set(item['id'] for item in train) & set(item['id'
 torch.manual_seed(42)
 random.seed(42)
 tokenizer = AutoTokenizer.from_pretrained(BASE, local_files_only=True)
+def with_guidelines(messages):
+    if not messages or messages[0].get('role') != 'system':
+        raise RuntimeError('A scenario system message is required')
+    return [{'role': 'system', 'content': GUIDELINES + '\n\n' + messages[0]['content']}, *messages[1:]]
+
 examples = []
 for item in train:
-    messages = item['messages']
+    messages = with_guidelines(item['messages'])
     if [message['role'] for message in messages] != ['system', 'user', 'assistant']:
         raise RuntimeError(f"Invalid conversation: {item['id']}")
     prefix = tokenizer.apply_chat_template(messages[:2], tokenize=True, add_generation_prompt=True)
     tokens = tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=False)
-    if len(tokens) > 512 or tokens[:len(prefix)] != prefix or len(tokens) <= len(prefix):
+    if len(tokens) > 1024 or tokens[:len(prefix)] != prefix or len(tokens) <= len(prefix):
         raise RuntimeError(f"Invalid conversation tokenization: {item['id']}")
     examples.append((item['id'], tokens, len(prefix)))
 
@@ -55,7 +61,7 @@ def evaluate():
     model.eval()
     output = []
     for item in holdout:
-        prefix = tokenizer.apply_chat_template(item['messages'][:2], tokenize=True, add_generation_prompt=True)
+        prefix = tokenizer.apply_chat_template(with_guidelines(item['messages'][:2]), tokenize=True, add_generation_prompt=True)
         ids = torch.tensor([prefix], device='cuda')
         with torch.inference_mode():
             generated = model.generate(input_ids=ids, attention_mask=torch.ones_like(ids), max_new_tokens=96,
@@ -94,7 +100,8 @@ output = ROOT / 'work' / 'experiments' / f'qwen-seed-{timestamp}'
 output.mkdir(parents=True, exist_ok=False)
 model.save_pretrained(output / 'adapter')
 report = {'base': 'Qwen/Qwen3-4B-Instruct-2507', 'revision': REVISION, 'trainHash': train_hash, 'holdoutHash': holdout_hash,
-          'seed': 42, 'epochs': 2, 'steps': len(losses), 'trainExamples': len(train), 'heldOutExamples': len(holdout),
+          'guidelinesHash': hashlib.sha256(GUIDELINES.encode('utf-8')).hexdigest(),
+          'seed': 42, 'epochs': 2, 'steps': len(losses), 'trainExamples': len(train), 'heldOutExamples': len(holdout), 'maxTrainingTokens': 1024,
           'learningRate': 0.0001, 'lora': {'r': 8, 'alpha': 16, 'dropout': 0.05, 'targets': ['q_proj', 'v_proj']},
           'trainableParameters': sum(parameter.numel() for parameter in params),
           'peakGpuMib': round(torch.cuda.max_memory_allocated() / 1024**2, 1),

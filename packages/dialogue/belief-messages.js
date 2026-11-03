@@ -1,12 +1,15 @@
 import { buildMessages } from './index.js';
 import { visibleSocialState } from './visible-social.js';
-export const BELIEF_PROMPT_VERSION='npc-belief-story-v2';
+import { NPC_GUIDELINES } from './guidelines.js';
+export const BELIEF_PROMPT_VERSION='npc-belief-story-v3';
 export function buildBeliefMessages(input){
  const social = visibleSocialState(input.socialState, input.npc?.id);
  const stateText = social ? `원래 합의: ${social.originalAgreement.time}, ${social.originalAgreement.place}. 현재 네가 믿는 시간: ${social.belief.time}. 믿음의 출처: ${social.belief.source}. 현재 서로 합의한 약속: ${social.agreement.time}, ${social.agreement.place}. 원래 합의와 지금 믿는 시간이 다를 수 있다. 실제로 만나러 갈 일정은 현재 서로 합의한 약속이다.` : '별도 저장 정보 없음';
  const context=JSON.parse(buildMessages(input)[1].content);
  if(!input.relationship||!input.personality||!input.stage)throw new Error('Relationship, personality and stage required');
- return [{role:'system',content:`너는 게임 속 ${input.npc.name}다. 한국어로 자연스럽고 짧게 한두 문장의 대사만 말한다. 설명·이름표·JSON은 쓰지 않는다.
+ return [{role:'system',content:`${NPC_GUIDELINES}
+
+너는 게임 속 ${input.npc.name}다. 한국어로 자연스럽고 짧게 한두 문장의 대사만 말한다. 설명·이름표·JSON은 쓰지 않는다.
 성격: ${input.personality}
 관계: ${input.relationship}
 현재 저장된 NPC 믿음·출처·합의(있을 때만): ${stateText}
