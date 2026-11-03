@@ -27,3 +27,16 @@ test('Invalid bounds are rejected and empty searches select recent records',()=>
  assert.deepEqual(selectNpcDialogueMemories(state,'friend','',{limit:2,recent:1}).map(x=>x.text.includes('일상 4')),[false,true]);
  assert.throws(()=>selectNpcDialogueMemories(state,'friend','안녕',{limit:1,recent:2}));
 });
+test('An explicit reference can use only the latest visible, non-sensitive conversation as a clue',()=>{
+ let state=createLife({npcIds:['friend']});
+ state=applyAction(state,{type:'npc_activity',npcId:'friend',detail:'친구가 도서관에 갔다.',observers:[]});
+ for(let i=0;i<8;i++)state=applyAction(state,{type:'npc_activity',npcId:'friend',detail:`일상 ${i}`,observers:[]});
+ const options={limit:3,recent:1,history:[{role:'user',text:'도서관 이야기인데',knownBy:['friend']},{role:'assistant',text:'응',knownBy:['friend']}]};
+ assert.ok(selectNpcDialogueMemories(state,'friend','거기 언제 갔어?',options).some(x=>x.text.includes('도서관')));
+ options.history[0].knownBy=['other'];
+ assert.equal(selectNpcDialogueMemories(state,'friend','거기 언제 갔어?',options).some(x=>x.text.includes('도서관')),false);
+ options.history[0].knownBy=['friend'];options.history[0].sensitive=true;
+ assert.equal(selectNpcDialogueMemories(state,'friend','거기 언제 갔어?',options).some(x=>x.text.includes('도서관')),false);
+ options.history[0].sensitive=false;
+ assert.equal(selectNpcDialogueMemories(state,'friend','밥 먹었어?',options).some(x=>x.text.includes('도서관')),false);
+});
