@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseSpeechUnderstanding,refineSpeechUnderstanding,understandSpeech } from './speech-understanding.js';
+import { parseSpeechUnderstanding,refineSpeechUnderstanding,understandSpeech,understandSpeechWithConsensus } from './speech-understanding.js';
 import { generateNpcTurnFromText } from './npc-turn.js';
 import { createLife } from '../simulation/index.js';
 import { createSpeechState } from '../simulation/speech-policy.js';
@@ -15,6 +15,16 @@ test('Narrow false-positive veto does not suppress genuine apologies or insults'
  assert.equal(refineSpeechUnderstanding('실례지만 도와주시겠어요?',yes('casual')).kind,'neutral');
  assert.equal(refineSpeechUnderstanding('무례한 말이에요.',yes('insult')).kind,'insult');
  assert.equal(refineSpeechUnderstanding('야, 같이 가자.',yes('casual')).kind,'casual');
+});
+test('Independent disagreement is not promoted to a confident speech judgement',async()=>{
+ const prompts=[];let index=0;
+ const result=await understandSpeechWithConsensus('그렇게 하지 마',async messages=>{prompts.push(messages);return index++===0?'{"index":2}':'{"index":0}';});
+ assert.equal(result.valid,false);assert.equal(result.kind,'neutral');assert.equal(result.reason,'disagreement');
+ assert.equal(JSON.stringify(prompts[1]).includes('"index":2'),false);
+ const agreement=await understandSpeechWithConsensus('멍청아',async()=>'{"index":3}');
+ assert.equal(agreement.valid,true);assert.equal(agreement.kind,'insult');
+ const failure=await understandSpeechWithConsensus('안녕',async()=>{throw Error('offline');});
+ assert.equal(failure.valid,false);assert.equal(failure.reason,'error');
 });
 test('Text classification reaches the game policy without model-written state',async()=>{
  const args={lifeState:createLife({npcIds:['n']}),dialogue:{npc:{id:'n'},player:{id:'p'},speech:'casual',playerText:'빨리 해'},speechState:createSpeechState()};

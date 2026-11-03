@@ -15,7 +15,8 @@
     "eval:memory-selection": "node scripts/evaluate-memory-selection.mjs",
     "eval:remembering": "node scripts/evaluate-remembering.mjs",
     "eval:speech-understanding": "node scripts/evaluate-speech-understanding.mjs",
-    "eval:speech-veto": "node scripts/evaluate-speech-veto.mjs"
+    "eval:speech-veto": "node scripts/evaluate-speech-veto.mjs",
+    "eval:speech-consensus": "node scripts/evaluate-speech-consensus.mjs"
   },
   "engines": {
     "node": ">=22"

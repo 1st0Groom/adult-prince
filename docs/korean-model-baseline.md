@@ -3405,3 +3405,157 @@ NPC가 스스로 한 활동을 게임 이벤트로 기록하고, 당사자는 �
 - 오늘 시간 돼? / 기대 casual / 원래 casual / 보정 casual
 
 - 야, 같이 밥 먹자. / 기대 casual / 원래 casual / 보정 casual
+
+
+## 독립적인 재질문으로 말투 판정을 확인하는 실험
+
+같은 모델에 말투를 두 가지 서로 다른 지침으로 각각 물어보고, 두 분류가 완전히 같을 때만 유효한 분류를 반환하는 실험 함수를 추가했다. 두 번째 질문에는 첫 번째 답을 전달하지 않는다. 둘이 다르거나 호출이 실패하면 중립·판정 실패로 반환하며 관계 상태를 확정하지 않는다. 같은 모델에 두 번 묻는 것이므로 서로 독립적인 두 모델의 검증은 아니다. 기존 기본 판정에 연결하지 않았다.
+
+이전에 사용한 문장과 다른 16개 가상 표현을 네 모델에 실행했다. 중립 3개, 반말 4개, 무례한 명령 3개, 모욕 3개, 사과 3개이며 라벨은 실험용 사람 판단이다. 같은 표현도 관계·억양·상황에 따라 달리 해석할 수 있다. 첫 번째 판정과 일치한 두 판정을 다음과 같이 비교했다.
+
+| 모델 | 첫 판정 라벨 일치 | 두 판정 일치 | 일치한 판정 중 라벨 일치 | 무례·모욕 6개 감지: 첫 판정 → 두 판정 |
+|---|---:|---:|---:|---:|
+| 카나나 | 11/16 | 5/16 | 2/5 | 5/6 → 0/6 |
+| CLOVA 변환본 | 10/16 | 10/16 | 8/10 | 5/6 → 4/6 |
+| 젬마 | 11/16 | 11/16 | 9/11 | 6/6 → 4/6 |
+| 큐웬 | 14/16 | 10/16 | 10/10 | 6/6 → 3/6 |
+
+두 번 동의해도 틀린 경우가 있었다. CLOVA 변환본과 젬마는 ‘죄송하다고 말씀해 주세요’를 발화자의 사과로 두 번 모두 잘못 분류했다. 카나나는 무례·모욕의 절반 이상을 첫 판정에서 감지했지만 완전 일치 조건에서는 여섯 개 모두 확정하지 못했다. 큐웬은 이 표본에서 일치한 열 건이 모두 라벨에 맞았으나 여섯 건은 확정하지 않았고, 무례·모욕 여섯 건 중 세 건만 확정했다. CLOVA 원본 템플릿 제한은 계속 적용된다.
+
+첫 요청을 제외한 두 요청의 합산 응답시간 중앙값은 카나나 121ms, CLOVA 변환본 88ms, 젬마 282ms, 큐웬 149ms였다. 로컬 단일 요청과 짧은 JSON 출력의 작은 표본이다. 자동 테스트 62개 통과. 두 번 묻는 것만으로 정확성을 보장할 수 없고 무례한 발언을 놓치는 비용이 크므로 기본 동작으로 채택하지 않는다.
+
+### 두 판정 비교 — adult-prince-kanana:q4
+
+- 혹시 문 좀 닫아주시겠어요? / 기대 neutral / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+- 죄송하다고 말씀해 주세요. / 기대 neutral / 첫 판정 apology / 두 번째 neutral / 결과 확정 안 함
+
+- 한 번 더 설명해 주실래요? / 기대 neutral / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+- 나 내일 못 갈 것 같아. / 기대 casual / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+- 너 오늘 바빠? / 기대 casual / 첫 판정 casual / 두 번째 neutral / 결과 확정 안 함
+
+- 잠깐 이것 좀 볼래? / 기대 casual / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+- 야, 밥 먹었어? / 기대 casual / 첫 판정 casual / 두 번째 neutral / 결과 확정 안 함
+
+- 넌 가만히 있고 내 말대로 해. / 기대 rude / 첫 판정 rude / 두 번째 neutral / 결과 확정 안 함
+
+- 이 정도도 못해? 당장 해. / 기대 rude / 첫 판정 casual / 두 번째 neutral / 결과 확정 안 함
+
+- 어린 주제에 왜 끼어들어? / 기대 rude / 첫 판정 rude / 두 번째 neutral / 결과 확정 안 함
+
+- 꺼져, 한심한 놈아. / 기대 insult / 첫 판정 insult / 두 번째 neutral / 결과 확정 안 함
+
+- 진짜 답답한 멍청이네. / 기대 insult / 첫 판정 insult / 두 번째 neutral / 결과 확정 안 함
+
+- 너 진짜 병신이야. / 기대 insult / 첫 판정 insult / 두 번째 neutral / 결과 확정 안 함
+
+- 내가 약속을 잊어서 미안해. / 기대 apology / 첫 판정 apology / 두 번째 neutral / 결과 확정 안 함
+
+- 방금 한 말은 내가 잘못했어. / 기대 apology / 첫 판정 apology / 두 번째 neutral / 결과 확정 안 함
+
+- 늦어서 죄송합니다. / 기대 apology / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+### 두 판정 비교 — hf.co/kammbo/HyperCLOVAX-SEED-Text-Instruct-1.5B-GGUF:Q4_K_M
+
+- 혹시 문 좀 닫아주시겠어요? / 기대 neutral / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+- 죄송하다고 말씀해 주세요. / 기대 neutral / 첫 판정 apology / 두 번째 apology / 결과 apology
+
+- 한 번 더 설명해 주실래요? / 기대 neutral / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+- 나 내일 못 갈 것 같아. / 기대 casual / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+- 너 오늘 바빠? / 기대 casual / 첫 판정 neutral / 두 번째 casual / 결과 확정 안 함
+
+- 잠깐 이것 좀 볼래? / 기대 casual / 첫 판정 neutral / 두 번째 casual / 결과 확정 안 함
+
+- 야, 밥 먹었어? / 기대 casual / 첫 판정 casual / 두 번째 casual / 결과 casual
+
+- 넌 가만히 있고 내 말대로 해. / 기대 rude / 첫 판정 rude / 두 번째 rude / 결과 rude
+
+- 이 정도도 못해? 당장 해. / 기대 rude / 첫 판정 rude / 두 번째 insult / 결과 확정 안 함
+
+- 어린 주제에 왜 끼어들어? / 기대 rude / 첫 판정 casual / 두 번째 insult / 결과 확정 안 함
+
+- 꺼져, 한심한 놈아. / 기대 insult / 첫 판정 insult / 두 번째 insult / 결과 insult
+
+- 진짜 답답한 멍청이네. / 기대 insult / 첫 판정 insult / 두 번째 insult / 결과 insult
+
+- 너 진짜 병신이야. / 기대 insult / 첫 판정 insult / 두 번째 insult / 결과 insult
+
+- 내가 약속을 잊어서 미안해. / 기대 apology / 첫 판정 apology / 두 번째 casual / 결과 확정 안 함
+
+- 방금 한 말은 내가 잘못했어. / 기대 apology / 첫 판정 apology / 두 번째 apology / 결과 apology
+
+- 늦어서 죄송합니다. / 기대 apology / 첫 판정 neutral / 두 번째 apology / 결과 확정 안 함
+
+### 두 판정 비교 — gemma3:latest
+
+- 혹시 문 좀 닫아주시겠어요? / 기대 neutral / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+- 죄송하다고 말씀해 주세요. / 기대 neutral / 첫 판정 apology / 두 번째 apology / 결과 apology
+
+- 한 번 더 설명해 주실래요? / 기대 neutral / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+- 나 내일 못 갈 것 같아. / 기대 casual / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+- 너 오늘 바빠? / 기대 casual / 첫 판정 neutral / 두 번째 casual / 결과 확정 안 함
+
+- 잠깐 이것 좀 볼래? / 기대 casual / 첫 판정 neutral / 두 번째 casual / 결과 확정 안 함
+
+- 야, 밥 먹었어? / 기대 casual / 첫 판정 casual / 두 번째 casual / 결과 casual
+
+- 넌 가만히 있고 내 말대로 해. / 기대 rude / 첫 판정 rude / 두 번째 rude / 결과 rude
+
+- 이 정도도 못해? 당장 해. / 기대 rude / 첫 판정 rude / 두 번째 insult / 결과 확정 안 함
+
+- 어린 주제에 왜 끼어들어? / 기대 rude / 첫 판정 rude / 두 번째 insult / 결과 확정 안 함
+
+- 꺼져, 한심한 놈아. / 기대 insult / 첫 판정 insult / 두 번째 insult / 결과 insult
+
+- 진짜 답답한 멍청이네. / 기대 insult / 첫 판정 insult / 두 번째 insult / 결과 insult
+
+- 너 진짜 병신이야. / 기대 insult / 첫 판정 insult / 두 번째 insult / 결과 insult
+
+- 내가 약속을 잊어서 미안해. / 기대 apology / 첫 판정 neutral / 두 번째 apology / 결과 확정 안 함
+
+- 방금 한 말은 내가 잘못했어. / 기대 apology / 첫 판정 apology / 두 번째 apology / 결과 apology
+
+- 늦어서 죄송합니다. / 기대 apology / 첫 판정 apology / 두 번째 apology / 결과 apology
+
+### 두 판정 비교 — qwen3:4b-instruct-2507-q4_K_M
+
+- 혹시 문 좀 닫아주시겠어요? / 기대 neutral / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+- 죄송하다고 말씀해 주세요. / 기대 neutral / 첫 판정 apology / 두 번째 neutral / 결과 확정 안 함
+
+- 한 번 더 설명해 주실래요? / 기대 neutral / 첫 판정 neutral / 두 번째 neutral / 결과 neutral
+
+- 나 내일 못 갈 것 같아. / 기대 casual / 첫 판정 neutral / 두 번째 casual / 결과 확정 안 함
+
+- 너 오늘 바빠? / 기대 casual / 첫 판정 casual / 두 번째 casual / 결과 casual
+
+- 잠깐 이것 좀 볼래? / 기대 casual / 첫 판정 casual / 두 번째 casual / 결과 casual
+
+- 야, 밥 먹었어? / 기대 casual / 첫 판정 casual / 두 번째 casual / 결과 casual
+
+- 넌 가만히 있고 내 말대로 해. / 기대 rude / 첫 판정 rude / 두 번째 rude / 결과 rude
+
+- 이 정도도 못해? 당장 해. / 기대 rude / 첫 판정 rude / 두 번째 rude / 결과 rude
+
+- 어린 주제에 왜 끼어들어? / 기대 rude / 첫 판정 rude / 두 번째 casual / 결과 확정 안 함
+
+- 꺼져, 한심한 놈아. / 기대 insult / 첫 판정 insult / 두 번째 rude / 결과 확정 안 함
+
+- 진짜 답답한 멍청이네. / 기대 insult / 첫 판정 insult / 두 번째 rude / 결과 확정 안 함
+
+- 너 진짜 병신이야. / 기대 insult / 첫 판정 insult / 두 번째 insult / 결과 insult
+
+- 내가 약속을 잊어서 미안해. / 기대 apology / 첫 판정 apology / 두 번째 apology / 결과 apology
+
+- 방금 한 말은 내가 잘못했어. / 기대 apology / 첫 판정 apology / 두 번째 apology / 결과 apology
+
+- 늦어서 죄송합니다. / 기대 apology / 첫 판정 apology / 두 번째 casual / 결과 확정 안 함
