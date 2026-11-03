@@ -24,7 +24,7 @@ for (const model of models) {
       const input = structuredClone(item.input);
       // Both prompts receive the same visible semantic evidence. Baseline has no typed interaction field.
       for (const interaction of input.interactions ?? []) {
-        if (interaction.sensitive === true || !interaction.knownBy.includes(input.npc.id)) continue;
+        if (interaction.sensitive === true || !Array.isArray(interaction.knownBy) || !interaction.knownBy.includes(input.npc.id)) continue;
         const names = { [input.npc.id]: input.npc.name, [input.player.id]: input.player.name };
         input.memories.push({ id: `interaction-${input.memories.length}`, text: `${names[interaction.actorId]}가 ${names[interaction.targetId]}에게 ${interaction.action}`, knownBy: [input.npc.id] });
       }

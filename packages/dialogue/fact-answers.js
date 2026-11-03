@@ -56,7 +56,7 @@ export function renderFactAnswer(input, intent) {
   if (intent === 'claimed-shared-past' && input.firstMeeting === true && pastClaim) {
     return polite ? '저는 오늘 처음 뵙는데, 혹시 다른 분이랑 헷갈리신 거 아니에요?' : '우린 오늘 처음 만났는데, 다른 사람이랑 헷갈린 거 아니야?';
   }
-  const visible = record => record?.sensitive !== true && record?.knownBy?.includes(npc.id);
+  const visible = record => record?.sensitive !== true && Array.isArray(record?.knownBy) && record.knownBy.includes(npc.id);
   if (intent === 'loan-origin' || intent === 'loan-holder') {
     const loans = (input.loans ?? []).filter(visible);
     // Ambiguous references must not silently select the first memory.

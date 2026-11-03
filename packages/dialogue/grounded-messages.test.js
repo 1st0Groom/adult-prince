@@ -20,9 +20,10 @@ test('Private records and other NPC observations never reach this speaker', () =
   const value = input();
   value.interactions.push({ actorId: 'unknown', action: '비밀 관찰', knownBy: ['other'] });
   value.interactions.push({ actorId: 'minsu', targetId: 'jiwoo', action: '민감 기록', knownBy: ['jiwoo'], sensitive: true });
+  value.interactions.push({ actorId: 'minsu', targetId: 'jiwoo', action: '다른 사람 기록', knownBy: 'other-jiwoo' });
   value.facts.push({ id: 'private', text: '숨긴 사실', knownBy: ['other'] });
   const text = JSON.stringify(buildGroundedMessages(value));
-  for (const secret of ['비밀 관찰', '민감 기록', '숨긴 사실']) assert.equal(text.includes(secret), false);
+  for (const secret of ['비밀 관찰', '민감 기록', '숨긴 사실', '다른 사람 기록']) assert.equal(text.includes(secret), false);
 });
 test('Missing identity or unbound interaction participants are rejected', () => {
   assert.throws(() => buildGroundedMessages({ ...input(), player: undefined }));

@@ -11,7 +11,7 @@ test('Loan holder, owner and borrower are distinct; direction is engine-owned', 
   assert.match(renderFactAnswer(value, 'loan-holder'), /지금 네가 가지고 있어/);
 });
 test('Invisible, sensitive or ambiguous records cannot become an answer', () => {
-  for (const change of [{knownBy:['other']},{sensitive:true}]) {
+  for (const change of [{knownBy:['other']},{knownBy:'other-n'},{sensitive:true}]) {
     const value=input(); Object.assign(value.loans[0],change);
     assert.equal(renderFactAnswer(value,'loan-holder'),null);
   }

@@ -10,7 +10,7 @@ export function buildGroundedMessages(input) {
   const context = JSON.parse(buildMessages(input)[1].content);
   const name = id => id === input.npc.id ? `${input.npc.name}(나)` : id === input.player.id ? `${input.player.name}(상대)` : null;
   const interactions = (input.interactions ?? [])
-    .filter(item => item.sensitive !== true && item.knownBy?.includes(input.npc.id))
+    .filter(item => item.sensitive !== true && Array.isArray(item.knownBy) && item.knownBy.includes(input.npc.id))
     .map(item => {
       if (!name(item.actorId) || !name(item.targetId) || typeof item.action !== 'string' || !item.action.trim()) throw new Error('Invalid interaction participants');
       return `${item.actorId === input.npc.id ? '내가' : '상대가'} ${item.targetId === input.npc.id ? '나에게' : '상대에게'} 한 일: ${item.action}`;
