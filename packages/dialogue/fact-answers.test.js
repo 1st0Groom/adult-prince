@@ -52,6 +52,13 @@ test('Rendered loan grammar respects 받침 and a stranger does not acquire shar
   const value=input();value.loans[0].item='충전기';value.speech='polite';
   assert.match(renderFactAnswer(value,'loan-origin'),/충전기를/);
   assert.match(renderFactAnswer(value,'loan-holder'),/충전기는/);
-  value.firstMeeting=true;assert.match(renderFactAnswer(value,'claimed-shared-past'),/처음 뵙는데/);
+  value.firstMeeting=true;value.playerText='지난주 우리 같이 만났잖아요, 기억나요?';assert.match(renderFactAnswer(value,'claimed-shared-past'),/처음 뵙는데/);
   value.firstMeeting=false;assert.equal(renderFactAnswer(value,'claimed-shared-past'),null);
+});
+test('A wrongly classified apology or work impression does not trigger a fabricated correction', async () => {
+  for (const playerText of ['내가 착각했나 봐요. 처음 뵙겠습니다.', '반복해서 보는 건 지루했는데 이상한 부분 찾는 건 재밌었어요.']) {
+    const value={...input(),firstMeeting:true,playerText};
+    const result=await generateFactAwareTurn(value,{classify:async()=>'{"index":5}',freeDialogue:async()=> '그렇구나.'});
+    assert.equal(result.mode,'free-dialogue');assert.equal(result.text,'그렇구나.');
+  }
 });

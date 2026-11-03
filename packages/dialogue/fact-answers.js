@@ -49,7 +49,11 @@ export function renderFactAnswer(input, intent) {
   const { npc, player, speech } = input;
   if (!npc?.id || !player?.id || player.id === npc.id || !['casual', 'polite'].includes(speech)) throw new Error('Invalid speakers or register');
   const polite = speech === 'polite';
-  if (intent === 'claimed-shared-past' && input.firstMeeting === true) {
+  // A model can misclassify an apology or a work impression as a past claim.
+  // Only use the first-meeting correction when the current words actually refer
+  // to a shared past; otherwise let the normal conversation continue.
+  const pastClaim = /기억|생각나|지난|예전|작년|어제|전에/.test(input.playerText ?? '') && /우리|같이|함께|너랑|저랑/.test(input.playerText ?? '');
+  if (intent === 'claimed-shared-past' && input.firstMeeting === true && pastClaim) {
     return polite ? '저는 오늘 처음 뵙는데, 혹시 다른 분이랑 헷갈리신 거 아니에요?' : '우린 오늘 처음 만났는데, 다른 사람이랑 헷갈린 거 아니야?';
   }
   const visible = record => record?.sensitive !== true && record?.knownBy?.includes(npc.id);
