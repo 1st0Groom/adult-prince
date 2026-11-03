@@ -1,0 +1,11 @@
+{
+  "name": "adult-prince",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test packages/simulation/*.test.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
