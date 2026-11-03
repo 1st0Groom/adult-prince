@@ -7,6 +7,7 @@ if (!models.length) throw new Error('Specify installed Ollama model tags');
 const cases = JSON.parse(await readFile(new URL('../data/evaluation/dialogue.json', import.meta.url), 'utf8'));
 const base = 'http://127.0.0.1:11434';
 const promptHash = createHash('sha256').update(await readFile(new URL('../packages/dialogue/index.js', import.meta.url))).digest('hex');
+const runnerHash = createHash('sha256').update(await readFile(new URL('./benchmark-ollama.mjs', import.meta.url))).digest('hex');
 const datasetHash = createHash('sha256').update(JSON.stringify(cases)).digest('hex');
 await mkdir('work/evaluations', { recursive: true });
 for (const model of models) {
@@ -16,7 +17,7 @@ for (const model of models) {
   const version = await (await fetch(`${base}/api/version`)).json();
   const tags = await (await fetch(`${base}/api/tags`)).json();
   const digest = tags.models?.find(item => item.name === model)?.digest ?? null;
-  const report = { mode: textOnly ? 'text-only-diagnostic' : 'structured', model, digest, promptHash, datasetHash, template: metadata.template, parameters: metadata.parameters, runtime: version, promptVersion: PROMPT_VERSION, createdAt: new Date().toISOString(), modelDetails: metadata.details, settings: {num_ctx:4096, num_predict:350, temperature:0.4, seed:42}, results: [] };
+  const report = { mode: textOnly ? 'text-only-diagnostic' : 'structured', model, digest, promptHash, runnerHash, datasetHash, template: metadata.template, parameters: metadata.parameters, runtime: version, promptVersion: textOnly ? 'npc-text-v1' : PROMPT_VERSION, createdAt: new Date().toISOString(), modelDetails: metadata.details, settings: {num_ctx:4096, num_predict:350, temperature:0.4, seed:42}, results: [] };
   const path = `work/evaluations/${Date.now()}-${model.replace(/[^a-zA-Z0-9-]/g,'_')}.json`;
   for (const item of cases) {
     const start = performance.now();
