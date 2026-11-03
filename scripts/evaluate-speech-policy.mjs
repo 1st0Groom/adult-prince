@@ -21,9 +21,10 @@ for(const model of process.argv.slice(2)) {
    const entry={style,kind,playerText,decision};
    const result=await generateSpeechResponse({reaction:decision.reaction,style,playerText},async messages=>{
     entry.messages=messages;
+    const started=performance.now();
     const response=await fetch(base+'/api/chat',{method:'POST',signal:AbortSignal.timeout(120000),body:JSON.stringify({model,messages,format:'json',stream:false,think:false,options:settings,keep_alive:'5m'})});
     if(!response.ok)throw new Error('HTTP '+response.status);
-    const body=await response.json();entry.raw=body.message?.content;return entry.raw;
+    const body=await response.json();entry.wallMs=Math.round(performance.now()-started);entry.metrics={loadMs:body.load_duration/1e6,totalMs:body.total_duration/1e6,outputTokens:body.eval_count};entry.raw=body.message?.content;return entry.raw;
    });
    report.cases.push({...entry,...result});
   }
