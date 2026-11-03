@@ -1,3 +1,4 @@
+import { createNpcView } from './npc-view.js';
 // Engine-provided answer cards. These are NPC-visible, not the entire world state.
 const intents = ['other', 'loan-origin', 'loan-holder', 'current-agreement', 'original-vs-belief', 'claimed-shared-past'];
 export const FACT_ROUTER_VERSION = 'npc-fact-router-v3';
@@ -106,5 +107,5 @@ export async function generateFactAwareTurn(input, { classify, freeDialogue }) {
   }
   const text = route.valid ? renderFactAnswer(input, route.intent) : null;
   if (text) return { text, mode: 'record-answer', route };
-  return { text: await freeDialogue(input), mode: 'free-dialogue', route };
+  return { text: await freeDialogue(createNpcView(input)), mode: 'free-dialogue', route };
 }
