@@ -6,7 +6,8 @@
     "test": "node --test packages/simulation/*.test.js packages/dialogue/*.test.js",
     "eval:prepare": "node scripts/evaluate-dialogue.mjs --dry-run",
     "eval:dialogue": "node scripts/evaluate-dialogue.mjs",
-    "eval:ollama": "node scripts/benchmark-ollama.mjs"
+    "eval:ollama": "node scripts/benchmark-ollama.mjs",
+    "eval:story": "node scripts/evaluate-personality-story.mjs"
   },
   "engines": {
     "node": ">=22"
