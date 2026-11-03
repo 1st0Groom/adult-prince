@@ -17,12 +17,15 @@ export function npcDialogueMemories(state, npcId) {
 export function selectNpcDialogueMemories(state, npcId, playerText, { limit = 8, recent = 2 } = {}) {
   if (typeof playerText !== 'string' || !Number.isSafeInteger(limit) || limit < 1 || !Number.isSafeInteger(recent) || recent < 0 || recent > limit) throw new Error('Invalid memory selection');
   const memories = npcDialogueMemories(state, npcId);
+  const saved = getNpcContext(state, npcId).memories;
   const terms = [...new Set((playerText.toLowerCase().match(/[가-힣a-z0-9]+/g) ?? [])
     .map(word => word.replace(/(에서|에게|한테|으로|은|는|이|가|을|를|에|과|와|도|만|의)$/, ''))
     .filter(word => word.length >= 2))];
   const selected = new Set();
   for (let i = Math.max(0, memories.length - recent); i < memories.length; i++) selected.add(i);
-  const candidates = memories.map((memory, index) => ({ index, score: terms.filter(term => memory.text.toLowerCase().includes(term)).length }));
+  // Time labels such as "오늘" occur in every rendered record; they are not
+  // evidence that an event matches the user's topic.
+  const candidates = memories.map((memory, index) => ({ index, score: terms.filter(term => saved[index].detail.toLowerCase().includes(term)).length }));
   candidates.sort((a, b) => b.score - a.score || b.index - a.index);
   for (const candidate of candidates) {
     if (selected.size >= limit) break;

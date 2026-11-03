@@ -11,7 +11,8 @@
     "eval:grounding": "node scripts/evaluate-grounding.mjs",
     "eval:facts": "node scripts/evaluate-fact-routing.mjs",
     "eval:training": "node scripts/evaluate-training.mjs",
-    "eval:daily": "node scripts/evaluate-npc-daily.mjs"
+    "eval:daily": "node scripts/evaluate-npc-daily.mjs",
+    "eval:memory-selection": "node scripts/evaluate-memory-selection.mjs"
   },
   "engines": {
     "node": ">=22"

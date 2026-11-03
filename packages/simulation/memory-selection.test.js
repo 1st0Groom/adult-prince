@@ -13,6 +13,14 @@ test('An old relevant memory and recent activities fit in a bounded view',()=>{
  assert.equal(npcDialogueMemories(state,'friend').length,13);assert.deepEqual(state,before);
  assert.deepEqual(selectNpcDialogueMemories(state,'other','우산은?'),[]);
 });
+test('A shared date label cannot outweigh an old matching event',()=>{
+ let state=createLife({npcIds:['friend']});
+ state=applyAction(state,{type:'npc_activity',npcId:'friend',detail:'친구가 도서관에 갔다.',observers:[]});
+ state=applyAction(state,{type:'sleep'});
+ for(let i=0;i<5;i++)state=applyAction(state,{type:'npc_activity',npcId:'friend',detail:`친구가 운동 ${i}를 했다.`,observers:[]});
+ const selected=selectNpcDialogueMemories(state,'friend','오늘 도서관에 갔어?',{limit:2,recent:1});
+ assert.ok(selected.some(x=>x.text.includes('도서관')));
+});
 test('Invalid bounds are rejected and empty searches select recent records',()=>{
  let state=createLife({npcIds:['friend']});
  for(let i=0;i<5;i++)state=applyAction(state,{type:'npc_activity',npcId:'friend',detail:`일상 ${i}`,observers:[]});
