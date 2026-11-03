@@ -30,3 +30,5 @@ Qwen3 4B Instruct 2507 Q4_K_M, 설치된 Gemma3 4B Q4_K_M, Phi-4-mini를 첫 비
 첫 실제 비교 결과: [2026-11-03 예비평가](model-baseline-2026-11-03.md).
 
 현재 프롬프트는 npc-dialogue-v2다. 회상 기록이 없는 경우와 있는 경우를 별도 모드로 제공한다. 두 버전의 예비평가는 동일 사례를 사용했으므로 이후 독립 평가가 필요하다.
+
+한국어 후보 실행 결과: [Kanana·HyperCLOVA](korean-model-baseline.md).

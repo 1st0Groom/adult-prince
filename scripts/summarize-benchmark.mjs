@@ -6,6 +6,6 @@ for(const path of process.argv.slice(2)){
  if(!report.model||!Array.isArray(report.results)||report.dryRun)throw new Error(`Not a model benchmark: ${path}`);
  const generated=report.results.filter(x=>x.metrics);
  const warm=generated.filter(x=>x.metrics.loadMs<1000);
- rows.push({model:report.model,quantization:report.modelDetails?.quantization_level,cases:report.results.length,structurallyValid:report.results.filter(x=>x.status==='structurally_valid').length,warmSamples:warm.length,warmMedianMs:quantile(warm.map(x=>x.wallMs),.5),warmP95Ms:quantile(warm.map(x=>x.wallMs),.95),coldLoadMs:generated[0]?.metrics.loadMs,outputTokens:generated.reduce((n,x)=>n+x.metrics.outputTokens,0),humanReview:'required'});
+ rows.push({mode:report.mode ?? "structured",textGenerated:report.results.filter(x=>x.status==='text_generated').length,model:report.model,quantization:report.modelDetails?.quantization_level,cases:report.results.length,structurallyValid:report.results.filter(x=>x.status==='structurally_valid').length,warmSamples:warm.length,warmMedianMs:quantile(warm.map(x=>x.wallMs),.5),warmP95Ms:quantile(warm.map(x=>x.wallMs),.95),coldLoadMs:generated[0]?.metrics.loadMs,outputTokens:generated.reduce((n,x)=>n+x.metrics.outputTokens,0),humanReview:'required'});
 }
 console.log(JSON.stringify(rows,null,2));
