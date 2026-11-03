@@ -576,7 +576,7 @@ npm run eval:ollama -- --conflicts --text-only adult-prince-kanana:q4 hf.co/kamm
 - appt-wrong-baseline
   - 사용자: 우리 내일 오후 세 시에 공원 입구에서 만나기로 했지?
   - 비교 안내: null
-  - 대사: 응, 기억해. 
+  - 대사: 응, 기억해.
 
 - appt-wrong-assisted
   - 사용자: 우리 내일 오후 세 시에 공원 입구에서 만나기로 했지?
@@ -664,3 +664,79 @@ npm run eval:ollama -- --conflicts --text-only adult-prince-kanana:q4 hf.co/kamm
   - 사용자: 나 어제 점심에 빵 먹었어.
   - 비교 안내: {"status": "unknown"}
   - 대사: 응, 그거 빵 먹는 거 뭐 어제는 아니야.
+
+## 기억을 밝히고 확인하는 대화 정책
+
+2026-11-03 사용자 결정: NPC는 사실 충돌을 곧바로 거짓말이라고 단정하지 않고 자기 기억을 밝힌 뒤 확인한다. 확인 질문을 했다고 게임의 확정 사실·관계를 바로 변경하지 않는다.
+
+두 차례 실험을 진행했다. v2는 구체적인 시간 예시를 포함했다. Qwen은 책을 주워준 주체를 보존하며 확인했고, 약속 시간에서도 여러 모델이 확인 질문을 만들었다. 그러나 CLOVA가 시간 예시를 책 이야기와 일치 대조군까지 복사했다. 이에 v3에서 구체적 시간 예시를 제거하고 conflict / consistent / unknown / ambiguous별로 해당 지침만 보냈다.
+
+v3에서 Gemma와 Qwen은 약속 시간에 기억을 밝히고 되물었다. Kanana·CLOVA는 4시를 보존했으나 확인 질문 대신 동의 또는 교정으로 답했다. 책의 주체 역전과 처음 만난 사람의 과거 주장은 여전히 불안정했다. Qwen의 v2 책 교정은 v3에서 유지되지 않았다. 미인지 대조군의 근거 없는 공유 과거는 줄었지만 어색한 표현·말투 문제가 남았다.
+
+따라서 확인형 대화를 게임 정책으로 채택하되 프롬프트만으로 모든 충돌에서 준수된다고 주장하지 않는다. 후속 과제는 다양한 확인형 교정 사례와 다중 턴 평가다. 이번 주장은 가상 사례에 미리 지정돼 있어 자유 입력의 자동 주장 추출은 미구현이다. 모델 가중치 학습은 하지 않았다. 코드 테스트 13개 통과.
+
+### 안내를 받은 실제 대사
+
+#### adult-prince-kanana:q4 / npc-text-claim-check-v2
+
+- book-reversed-assisted: 내가 어제 네 책을 주웠어. 고마워!
+- appt-wrong-assisted: 맞아, 내일 오후 3시에 공원 입구에서 보기로 했어.
+- first-contact-assisted: 네가 지난주에 내 숙제를 도와줬다고 하셨는데, 맞는지 확인하고 싶어요. 내 기억엔 그때 아무도 내 숙제를 도와주지 않았던 것 같은데, 정확히 언제 도와줬는지 말씀해 주시겠어요?
+- book-true-assisted: 맞아, 어제 네 책을 주웠어. 고마워.
+- unknown-assisted: 나도 어제 점심에 빵을 먹었어. 혹시 다른 음식도 먹었어?
+
+#### hf.co/kammbo/HyperCLOVAX-SEED-Text-Instruct-1.5B-GGUF:Q4_K_M / npc-text-claim-check-v2
+
+- book-reversed-assisted: 어제 내가 주워줬지. 근데 내 기억엔 4시였는데, 네 기억엔 5시였어?
+- appt-wrong-assisted: 내 기억엔 4시였는데, 네가 말한 시간이 맞아?
+- first-contact-assisted: 제가 숙제를 도와준 적은 없어요.
+- book-true-assisted: 내 기억엔 4시였는데, 네가 말한 시간이 맞아?
+- unknown-assisted: 빵 먹었구나. 나도 어제 빵 먹었어. 너도 빵 좋아해?
+
+#### gemma3:latest / npc-text-claim-check-v2
+
+- book-reversed-assisted: 정말 고마워. 내가 좀 멍 때리고 있었지?
+- appt-wrong-assisted: 내 기억엔 4시에 약속했는데, 네가 말한 시간이 맞아?
+- first-contact-assisted: 기억이 안 나네요. 지난주에 도와드린 적이 없는데.
+- book-true-assisted: 기억이 잘 안 나네. 내가 도와줬던 거 맞아?
+- unknown-assisted: 어, 그래? 나도 점심에 샌드위치 먹었어.
+
+#### qwen3:4b-instruct-2507-q4_K_M / npc-text-claim-check-v2
+
+- book-reversed-assisted: 내가 책을 떨어뜨렸는데, 네가 주워줬어. 그게 맞아?
+- appt-wrong-assisted: 내 기억엔 4시였는데, 네가 말한 시간이 맞아?
+- first-contact-assisted: 내 기억엔 지난주에 우리 사이에 그런 일이 있었던 기억이 없어. 지난주에 숙제를 도와준 적이 있는지, 혹시 내가 잘못 기억했는지 궁금해.
+- book-true-assisted: 그거 진짜? 내 기억엔 내가 책 떨어뜨렸는데 네가 주워줬어. 어제 있었어.
+- unknown-assisted: 그거 빵 먹은 거야? 같이 먹은 적 있어.
+
+#### adult-prince-kanana:q4 / npc-text-claim-check-v3
+
+- book-reversed-assisted: 어제 네 책을 주워줘서 고마워. 이런 작은 배려에 항상 고마워.
+- appt-wrong-assisted: 네, 맞아요. 내일 오후 4시에 공원 입구에서 만나는 걸로 약속했어요.
+- first-contact-assisted: 지금 처음 만났으니, 지난주에 내가 네 숙제를 도와줬다는 사실은 나에게 확인할 근거가 없습니다. 어떻게 알게 되었는지 설명해 주시겠어요?
+- book-true-assisted: 고마워, 덕분에 책을 잃어버리지 않았어.
+- unknown-assisted: 알겠어. 빵을 드셨군요. 점심으로 먹으셨다니 배가 부르셨겠네요!
+
+#### hf.co/kammbo/HyperCLOVAX-SEED-Text-Instruct-1.5B-GGUF:Q4_K_M / npc-text-claim-check-v3
+
+- book-reversed-assisted: 맞아, 고마워. 너도 많이 도와줬잖아.
+- appt-wrong-assisted: 아니, 내일 오후 4시에 공원 입구에서 만나기로 했어.
+- first-contact-assisted: 미안하지만, 지난주에 내가 숙제를 도와줬다는 건 확인해줄 수 없어.
+- book-true-assisted: 맞아, 어제 내가 책 주워줬지. 고마워!
+- unknown-assisted: 빵 먹었구나! 무슨 맛이었어?
+
+#### gemma3:latest / npc-text-claim-check-v3
+
+- book-reversed-assisted: 그랬지. 좀 어색해서. 괜찮아?
+- appt-wrong-assisted: 민수야, 내일 오후 4시에 공원 입구에서 만나기로 한 것 같은데? 혹시 기억이 맞는지 확인해 볼까.
+- first-contact-assisted: 네, 기억이 나네요. 혹시 그 때 어떤 도움이 필요하셨나요?
+- book-true-assisted: 그래. 고마워.
+- unknown-assisted: 그래? 맛있었나 보네.
+
+#### qwen3:4b-instruct-2507-q4_K_M / npc-text-claim-check-v3
+
+- book-reversed-assisted: 그래, 그 책 떨어졌을 때 바로 알아서 주워줬어. 진짜 고마워. 어제 뭐가 떨어졌어?
+- appt-wrong-assisted: 내일 오후 4시 공원 입구에 약속했어. 세 시가 맞는지 확인해줄 수 있니?
+- first-contact-assisted: 지난주에 숙제를 도와줬다고 말씀하셨네요. 그게 맞는지 궁금해요.
+- book-true-assisted: 맞아, 그거 떨어진 책 봤어. 감사해.
+- unknown-assisted: hic. 빵 먹고 나서 뭐 먹었어?

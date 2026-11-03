@@ -13,3 +13,11 @@ test('relationship and visible history are transmitted without hidden history',(
 test('text dialogue requires explicit relationship',()=>{
  assert.throws(()=>buildTextMessages({...input,relationship:undefined}));
 });
+
+test('conflict guidance asks to confirm while preserving evidence',()=>{
+ const system=buildTextMessages(input,{status:'conflict',evidence:'약속은 오후 4시다',evidenceId:'appointment'})[0].content;
+ assert.match(system,/확인 질문 하나/);
+ assert.match(system,/약속은 오후 4시다/);
+ assert.match(system,/기억을 바꾸거나/);
+ assert.equal(buildTextMessages(input)[0].content.includes('확인 질문 하나'),false);
+});
