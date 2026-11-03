@@ -99,6 +99,12 @@ export function renderFactAnswer(input, intent) {
 }
 
 export async function generateFactAwareTurn(input, { classify, freeDialogue }) {
+  // The caller may pass the engine's explicit ambiguous-reference result.
+  // A missing match alone is not evidence that the player is wrong.
+  if (input.memoryResolution === 'ambiguous') {
+    if (!['casual', 'polite'].includes(input.speech)) throw new Error('Explicit register required');
+    return { text: input.speech === 'polite' ? '어떤 걸 말씀하시는 건가요?' : '어떤 거 말하는 거야?', mode: 'clarify-reference', route: { intent: 'ambiguous-reference', valid: true, source: 'game' } };
+  }
   const messages = buildFactRouteMessages(input);
   let route = routeFactHint(input.playerText);
   if (!route) {

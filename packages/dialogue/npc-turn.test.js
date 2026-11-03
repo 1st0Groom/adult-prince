@@ -21,3 +21,13 @@ test('Neutral factual question uses persistent records and ordinary chat uses fr
   });
   assert.equal(normal.mode, 'free-dialogue'); assert.equal(normal.text, '그냥 평범해.');
 });
+test('Ambiguous memory selection can reach the NPC turn without inventing an answer', async () => {
+  const {createLife,applyAction}=await import('../simulation/index.js');
+  const {selectNpcDialogueMemoryResult}=await import('../simulation/dialogue-memory.js');
+  let state=createLife({npcIds:['n']});
+  state=applyAction(state,{type:'npc_activity',npcId:'n',detail:'우산을 빌렸다',observers:[]});
+  state=applyAction(state,{type:'npc_activity',npcId:'n',detail:'카메라를 빌렸다',observers:[]});
+  const selection=selectNpcDialogueMemoryResult(state,'n','그거 기억나?',{history:[{role:'user',text:'우산과 카메라 이야기야',knownBy:['n']}]});
+  const reply=await generateNpcTurn({dialogue:{...dialogue,playerText:'그거 기억나?',memoryResolution:selection.resolution},speechState:createSpeechState(),speechAction:{kind:'neutral'}},{selectExpression:never,classifyFact:never,freeDialogue:never});
+  assert.equal(selection.resolution,'ambiguous');assert.equal(reply.mode,'clarify-reference');assert.equal(reply.text,'어떤 거 말하는 거야?');
+});

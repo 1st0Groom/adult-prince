@@ -73,3 +73,9 @@ test('A player confirming a previously explained loan gets an answer without rep
   value.history[0].knownBy=['n'];value.loans[0].lenderId='n';value.loans[0].borrowerId='p';
   assert.match(renderFactAnswer(value,'loan-origin'),/빌려줬어/);
 });
+test('An ambiguous game-provided reference asks for clarification without guessing or calling the model', async () => {
+  const value={...input(),playerText:'그거 기억해?',memoryResolution:'ambiguous'};
+  const fail=async()=>{throw new Error('should not be called');};
+  const result=await generateFactAwareTurn(value,{classify:fail,freeDialogue:fail});
+  assert.equal(result.mode,'clarify-reference');assert.equal(result.text,'어떤 거 말하는 거야?');
+});
