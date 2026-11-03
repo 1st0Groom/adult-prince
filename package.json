@@ -9,7 +9,8 @@
     "eval:ollama": "node scripts/benchmark-ollama.mjs",
     "eval:story": "node scripts/evaluate-personality-story.mjs",
     "eval:grounding": "node scripts/evaluate-grounding.mjs",
-    "eval:facts": "node scripts/evaluate-fact-routing.mjs"
+    "eval:facts": "node scripts/evaluate-fact-routing.mjs",
+    "eval:training": "node scripts/evaluate-training.mjs"
   },
   "engines": {
     "node": ">=22"
