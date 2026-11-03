@@ -69,6 +69,12 @@ export function renderFactAnswer(input, intent) {
         (polite ? `그 ${item} 지금 ${player.name} 님이 가지고 계세요.` : `그 ${item} 지금 네가 가지고 있어.`);
     }
     const item = `${loan.item}${particle(loan.item, '을', '를')}`;
+    const visibleHistory = (input.history ?? []).filter(turn => turn.role === 'assistant' && turn.sensitive !== true && Array.isArray(turn.knownBy) && turn.knownBy.includes(npc.id));
+    const lastReply = visibleHistory.at(-1)?.text ?? '';
+    const confirmsPlayerLent = /내가\s*(?:너|너한테|너에게|네게).*빌려줬다는/.test(input.playerText ?? '');
+    if (loan.lenderId === player.id && confirmsPlayerLent && lastReply.includes(loan.item) && /빌렸어요|빌렸어/.test(lastReply)) {
+      return polite ? `네, 제가 ${player.name} 님께 ${item} 빌린 거예요.` : `응, 내가 너한테 ${item} 빌린 거야.`;
+    }
     return loan.lenderId === npc.id ? (polite ? `제 기억에는 제가 ${player.name} 님께 ${item} 빌려드렸어요. 혹시 다르게 기억하시나요?` : `내 기억엔 내가 너한테 ${item} 빌려줬어. 혹시 다르게 기억해?`) :
       (polite ? `제 기억에는 제가 ${player.name} 님께 ${item} 빌렸어요. 혹시 다르게 기억하시나요?` : `내 기억엔 내가 너한테 ${item} 빌렸어. 혹시 다르게 기억해?`);
   }

@@ -62,3 +62,14 @@ test('A wrongly classified apology or work impression does not trigger a fabrica
     assert.equal(result.mode,'free-dialogue');assert.equal(result.text,'그렇구나.');
   }
 });
+test('A player confirming a previously explained loan gets an answer without repeated doubt', () => {
+  const value=input();value.playerText='아 내가 너한테 빌려줬다는 거야?';
+  const first=renderFactAnswer(value,'loan-origin');
+  value.history=[{role:'assistant',text:first,knownBy:['n']}];
+  const second=renderFactAnswer(value,'loan-origin');
+  assert.match(second,/응, 내가 너한테 우산을 빌린 거야/);
+  assert.notEqual(first,second);assert.doesNotMatch(second,/혹시/);
+  value.history[0].knownBy=['other'];assert.equal(renderFactAnswer(value,'loan-origin'),first);
+  value.history[0].knownBy=['n'];value.loans[0].lenderId='n';value.loans[0].borrowerId='p';
+  assert.match(renderFactAnswer(value,'loan-origin'),/빌려줬어/);
+});
