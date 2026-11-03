@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { generateNpcTurn } from './npc-turn.js';
+import { generateNpcTurn,generateRememberingNpcTurn } from './npc-turn.js';
 import { createSpeechState } from '../simulation/speech-policy.js';
 const dialogue = { npc: { id: 'n' }, player: { id: 'p' }, speech: 'casual', playerText: '그 우산은 누구한테 있어?',
   loans: [{ lenderId: 'p', borrowerId: 'n', holderId: 'n', item: '우산', knownBy: ['n'] }] };
@@ -30,4 +30,18 @@ test('Ambiguous memory selection can reach the NPC turn without inventing an ans
   const selection=selectNpcDialogueMemoryResult(state,'n','그거 기억나?',{history:[{role:'user',text:'우산과 카메라 이야기야',knownBy:['n']}]});
   const reply=await generateNpcTurn({dialogue:{...dialogue,playerText:'그거 기억나?',memoryResolution:selection.resolution},speechState:createSpeechState(),speechAction:{kind:'neutral'}},{selectExpression:never,classifyFact:never,freeDialogue:never});
   assert.equal(selection.resolution,'ambiguous');assert.equal(reply.mode,'clarify-reference');assert.equal(reply.text,'어떤 거 말하는 거야?');
+});
+test('The remembering turn selects only this NPC’s old relevant memory and passes it to free dialogue', async () => {
+  const {createLife,applyAction}=await import('../simulation/index.js');
+  let state=createLife({npcIds:['n','other']});
+  state=applyAction(state,{type:'important_event',detail:'도서관에서 책을 함께 골랐다',observers:['n']});
+  state=applyAction(state,{type:'important_event',detail:'다른 사람의 비밀 도서관 이야기',observers:['other']});
+  for(let i=0;i<8;i++)state=applyAction(state,{type:'npc_activity',npcId:'n',detail:`일상 ${i}`,observers:[]});
+  const reply=await generateRememberingNpcTurn({lifeState:state,dialogue:{...dialogue,playerText:'거기 기억나?',history:[{role:'user',text:'도서관 얘기야',knownBy:['n']}]},speechState:createSpeechState(),speechAction:{kind:'neutral'},memoryOptions:{limit:3,recent:1}},{selectExpression:never,classifyFact:async()=>'{"index":0}',freeDialogue:async view=>{
+    assert.ok(view.memories.some(m=>m.text.includes('책을 함께')));
+    assert.equal(JSON.stringify(view).includes('다른 사람의 비밀'),false);
+    return '응, 기억나.';
+  }});
+  assert.equal(reply.mode,'free-dialogue');assert.equal(reply.text,'응, 기억나.');assert.equal(reply.memorySelection.resolution,'candidate');
+  await assert.rejects(()=>generateRememberingNpcTurn({lifeState:state,dialogue:{...dialogue,npc:{id:'missing'}},speechState:createSpeechState(),speechAction:{kind:'neutral'}},{selectExpression:never,classifyFact:never,freeDialogue:never}));
 });
