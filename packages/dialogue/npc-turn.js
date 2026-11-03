@@ -1,6 +1,7 @@
 import { generateSocialTurn } from './social-turn.js';
 import { generateFactAwareTurn } from './fact-answers.js';
 import { selectNpcDialogueMemoryResult } from '../simulation/dialogue-memory.js';
+import { understandSpeech } from './speech-understanding.js';
 
 // Respect social boundaries before answering factual questions. All state changes
 // still come from validated game actions; generated language cannot commit them.
@@ -32,4 +33,15 @@ export async function generateRememberingNpcTurn({ lifeState, dialogue, speechSt
     speechState, speechAction, style
   }, adapters);
   return { ...reply, memorySelection: { resolution: selected.resolution, ids: selected.memories.map(memory => memory.id) } };
+}
+
+// Experimental text entry point. The classifier suggests a type; game rules
+// still determine the reaction. Invalid output never records an incident.
+export async function generateNpcTurnFromText({ lifeState, dialogue, speechState, casualAgreed = false, formality = 'strict', style = 'firm', memoryOptions = {} }, adapters) {
+  const understanding = await understandSpeech(dialogue.playerText, adapters.classifySpeech);
+  const reply = await generateRememberingNpcTurn({ lifeState, dialogue, speechState,
+    speechAction: { kind: understanding.kind, casualAgreed, formality }, style, memoryOptions }, adapters);
+  // Classifier results are not verified game actions. Expose the tentative
+  // state for inspection, but do not commit incidents or apologies silently.
+  return { ...reply, proposedSpeechState: reply.state, state: structuredClone(speechState), speechImpactCommitted: false, speechUnderstanding: understanding };
 }

@@ -13,7 +13,8 @@
     "eval:training": "node scripts/evaluate-training.mjs",
     "eval:daily": "node scripts/evaluate-npc-daily.mjs",
     "eval:memory-selection": "node scripts/evaluate-memory-selection.mjs",
-    "eval:remembering": "node scripts/evaluate-remembering.mjs"
+    "eval:remembering": "node scripts/evaluate-remembering.mjs",
+    "eval:speech-understanding": "node scripts/evaluate-speech-understanding.mjs"
   },
   "engines": {
     "node": ">=22"
