@@ -15,3 +15,14 @@ test('NPC personal activity is remembered by actor and witnesses, not everyone',
  assert.deepEqual(initial.events,[]);
  assert.throws(()=>applyAction(state,{type:'npc_activity',npcId:'actor',detail:'일',observers:['missing']}));
 });
+test('Remembered event dates move from today to yesterday without changing event time', () => {
+ let state=createLife({npcIds:['actor']});
+ state=applyAction(state,{type:'npc_activity',npcId:'actor',detail:'도서관에서 책을 골랐다',observers:[]});
+ assert.match(npcDialogueMemories(state,'actor')[0].text,/오늘 07:00/);
+ state=applyAction(state,{type:'sleep'});
+ assert.match(npcDialogueMemories(state,'actor')[0].text,/어제 07:00/);
+ state=applyAction(state,{type:'sleep'});
+ assert.match(npcDialogueMemories(state,'actor')[0].text,/2일 전 07:00/);
+ const invalid=structuredClone(state);invalid.npcs.actor.memories[0].minute=state.minute+1;
+ assert.throws(()=>npcDialogueMemories(invalid,'actor'));
+});
