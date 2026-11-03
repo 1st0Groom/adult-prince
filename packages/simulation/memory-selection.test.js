@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { createLife,applyAction } from './index.js';
+import { npcDialogueMemories,selectNpcDialogueMemories } from './dialogue-memory.js';
+test('An old relevant memory and recent activities fit in a bounded view',()=>{
+ let state=createLife({npcIds:['friend','other']});
+ state=applyAction(state,{type:'important_event',detail:'민수가 친구에게 우산을 빌려줬다.',observers:['friend']});
+ for(let i=0;i<12;i++)state=applyAction(state,{type:'npc_activity',npcId:'friend',detail:`친구가 일상 활동 ${i}를 했다.`,observers:[]});
+ const before=structuredClone(state);
+ const selected=selectNpcDialogueMemories(state,'friend','예전에 빌려준 우산은 기억나?',{limit:4,recent:2});
+ assert.equal(selected.length,4);assert.ok(selected.some(x=>x.text.includes('우산')));
+ assert.ok(selected.some(x=>x.text.includes('활동 11')));assert.ok(selected.some(x=>x.text.includes('활동 10')));
+ assert.equal(npcDialogueMemories(state,'friend').length,13);assert.deepEqual(state,before);
+ assert.deepEqual(selectNpcDialogueMemories(state,'other','우산은?'),[]);
+});
+test('Invalid bounds are rejected and empty searches select recent records',()=>{
+ let state=createLife({npcIds:['friend']});
+ for(let i=0;i<5;i++)state=applyAction(state,{type:'npc_activity',npcId:'friend',detail:`일상 ${i}`,observers:[]});
+ assert.deepEqual(selectNpcDialogueMemories(state,'friend','',{limit:2,recent:1}).map(x=>x.text.includes('일상 4')),[false,true]);
+ assert.throws(()=>selectNpcDialogueMemories(state,'friend','안녕',{limit:1,recent:2}));
+});
