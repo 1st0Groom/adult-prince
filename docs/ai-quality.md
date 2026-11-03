@@ -34,3 +34,5 @@ Qwen3 4B Instruct 2507 Q4_K_M, 설치된 Gemma3 4B Q4_K_M, Phi-4-mini를 첫 비
 한국어 후보 실행 결과: [Kanana·HyperCLOVA](korean-model-baseline.md).
 
 관계 명시 재시험: `--relationships --text-only`. 이전의 관계가 불명확한 시험을 근거로 한 모델 우선순위는 철회한다. 최신 결과는 한국어 비교 문서의 관계·공유 배경 절을 따른다.
+
+사실 충돌 안내 실험은 `--conflicts --text-only`로 실행한다. 구조화 주장은 가상 사례에서 미리 지정하며 자유 입력의 주장 자동 추출은 미구현이다. 충돌 비교 성공과 AI의 교정 표현 성공을 따로 판단한다.

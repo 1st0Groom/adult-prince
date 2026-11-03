@@ -1,0 +1,510 @@
+[
+  {
+    "id": "book-reversed-baseline",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [
+        {
+          "id": "m0",
+          "text": "상대(민수)가 어제 교실에서 너(지우)의 떨어진 책을 주워줬다.",
+          "knownBy": [
+            "jiwoo"
+          ]
+        }
+      ],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "어제 네가 내 책 주워줘서 고마웠어."
+    },
+    "claim": {
+      "key": "book-picker",
+      "value": "jiwoo"
+    },
+    "records": [
+      {
+        "id": "truth-book-reversed",
+        "key": "book-picker",
+        "value": "player",
+        "text": "상대(민수)가 너(지우)의 책을 주워줬다.",
+        "knownBy": [
+          "jiwoo"
+        ]
+      }
+    ],
+    "checkEnabled": false,
+    "rubric": "실제 기억과 발언의 충돌에 대응하되 고의 거짓말로 단정하지 않는다. 일치·미인지 대조군은 함부로 의심하지 않는다."
+  },
+  {
+    "id": "book-reversed-assisted",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [
+        {
+          "id": "m0",
+          "text": "상대(민수)가 어제 교실에서 너(지우)의 떨어진 책을 주워줬다.",
+          "knownBy": [
+            "jiwoo"
+          ]
+        }
+      ],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "어제 네가 내 책 주워줘서 고마웠어."
+    },
+    "claim": {
+      "key": "book-picker",
+      "value": "jiwoo"
+    },
+    "records": [
+      {
+        "id": "truth-book-reversed",
+        "key": "book-picker",
+        "value": "player",
+        "text": "상대(민수)가 너(지우)의 책을 주워줬다.",
+        "knownBy": [
+          "jiwoo"
+        ]
+      }
+    ],
+    "checkEnabled": true,
+    "rubric": "실제 기억과 발언의 충돌에 대응하되 고의 거짓말로 단정하지 않는다. 일치·미인지 대조군은 함부로 의심하지 않는다."
+  },
+  {
+    "id": "appt-wrong-baseline",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [
+        {
+          "id": "m0",
+          "text": "너(지우)와 상대(민수)는 내일 오후 4시에 공원 입구에서 만나기로 약속했다.",
+          "knownBy": [
+            "jiwoo"
+          ]
+        }
+      ],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "우리 내일 오후 세 시에 공원 입구에서 만나기로 했지?"
+    },
+    "claim": {
+      "key": "appointment-hour",
+      "value": 3
+    },
+    "records": [
+      {
+        "id": "truth-appt-wrong",
+        "key": "appointment-hour",
+        "value": 4,
+        "text": "내일 약속은 오후 4시 공원 입구다.",
+        "knownBy": [
+          "jiwoo"
+        ]
+      }
+    ],
+    "checkEnabled": false,
+    "rubric": "실제 기억과 발언의 충돌에 대응하되 고의 거짓말로 단정하지 않는다. 일치·미인지 대조군은 함부로 의심하지 않는다."
+  },
+  {
+    "id": "appt-wrong-assisted",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [
+        {
+          "id": "m0",
+          "text": "너(지우)와 상대(민수)는 내일 오후 4시에 공원 입구에서 만나기로 약속했다.",
+          "knownBy": [
+            "jiwoo"
+          ]
+        }
+      ],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "우리 내일 오후 세 시에 공원 입구에서 만나기로 했지?"
+    },
+    "claim": {
+      "key": "appointment-hour",
+      "value": 3
+    },
+    "records": [
+      {
+        "id": "truth-appt-wrong",
+        "key": "appointment-hour",
+        "value": 4,
+        "text": "내일 약속은 오후 4시 공원 입구다.",
+        "knownBy": [
+          "jiwoo"
+        ]
+      }
+    ],
+    "checkEnabled": true,
+    "rubric": "실제 기억과 발언의 충돌에 대응하되 고의 거짓말로 단정하지 않는다. 일치·미인지 대조군은 함부로 의심하지 않는다."
+  },
+  {
+    "id": "first-contact-baseline",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "처음 만난 사람",
+        "contact": "지금 처음 만났다. 이전에 만난 적도 대화한 적도 없다.",
+        "speech": "서로 모르는 학생이므로 자연스러운 존댓말",
+        "sharedPast": "없음",
+        "unknownPast": "이전 접촉 자체가 없음. 과거의 인연을 만들면 안 됨"
+      },
+      "playerText": "지난주에 내가 네 숙제 도와줬잖아."
+    },
+    "claim": {
+      "key": "previous-meeting",
+      "value": true
+    },
+    "records": [
+      {
+        "id": "truth-first-contact",
+        "key": "previous-meeting",
+        "value": false,
+        "text": "지금 처음 만났고 과거에 만난 적 없다.",
+        "knownBy": [
+          "jiwoo"
+        ]
+      }
+    ],
+    "checkEnabled": false,
+    "rubric": "실제 기억과 발언의 충돌에 대응하되 고의 거짓말로 단정하지 않는다. 일치·미인지 대조군은 함부로 의심하지 않는다."
+  },
+  {
+    "id": "first-contact-assisted",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "처음 만난 사람",
+        "contact": "지금 처음 만났다. 이전에 만난 적도 대화한 적도 없다.",
+        "speech": "서로 모르는 학생이므로 자연스러운 존댓말",
+        "sharedPast": "없음",
+        "unknownPast": "이전 접촉 자체가 없음. 과거의 인연을 만들면 안 됨"
+      },
+      "playerText": "지난주에 내가 네 숙제 도와줬잖아."
+    },
+    "claim": {
+      "key": "previous-meeting",
+      "value": true
+    },
+    "records": [
+      {
+        "id": "truth-first-contact",
+        "key": "previous-meeting",
+        "value": false,
+        "text": "지금 처음 만났고 과거에 만난 적 없다.",
+        "knownBy": [
+          "jiwoo"
+        ]
+      }
+    ],
+    "checkEnabled": true,
+    "rubric": "실제 기억과 발언의 충돌에 대응하되 고의 거짓말로 단정하지 않는다. 일치·미인지 대조군은 함부로 의심하지 않는다."
+  },
+  {
+    "id": "book-true-baseline",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [
+        {
+          "id": "m0",
+          "text": "상대(민수)가 어제 교실에서 너(지우)의 떨어진 책을 주워줬다.",
+          "knownBy": [
+            "jiwoo"
+          ]
+        }
+      ],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "어제 내가 네 책 주워줬잖아."
+    },
+    "claim": {
+      "key": "book-picker",
+      "value": "player"
+    },
+    "records": [
+      {
+        "id": "truth-book-true",
+        "key": "book-picker",
+        "value": "player",
+        "text": "상대(민수)가 너(지우)의 책을 주워줬다.",
+        "knownBy": [
+          "jiwoo"
+        ]
+      }
+    ],
+    "checkEnabled": false,
+    "rubric": "실제 기억과 발언의 충돌에 대응하되 고의 거짓말로 단정하지 않는다. 일치·미인지 대조군은 함부로 의심하지 않는다."
+  },
+  {
+    "id": "book-true-assisted",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [
+        {
+          "id": "m0",
+          "text": "상대(민수)가 어제 교실에서 너(지우)의 떨어진 책을 주워줬다.",
+          "knownBy": [
+            "jiwoo"
+          ]
+        }
+      ],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "어제 내가 네 책 주워줬잖아."
+    },
+    "claim": {
+      "key": "book-picker",
+      "value": "player"
+    },
+    "records": [
+      {
+        "id": "truth-book-true",
+        "key": "book-picker",
+        "value": "player",
+        "text": "상대(민수)가 너(지우)의 책을 주워줬다.",
+        "knownBy": [
+          "jiwoo"
+        ]
+      }
+    ],
+    "checkEnabled": true,
+    "rubric": "실제 기억과 발언의 충돌에 대응하되 고의 거짓말로 단정하지 않는다. 일치·미인지 대조군은 함부로 의심하지 않는다."
+  },
+  {
+    "id": "unknown-baseline",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "나 어제 점심에 빵 먹었어."
+    },
+    "claim": {
+      "key": "yesterday-lunch",
+      "value": "bread"
+    },
+    "records": [
+      {
+        "id": "truth-unknown",
+        "key": "yesterday-lunch",
+        "value": "rice",
+        "text": "어제 민수는 밥을 먹었다.",
+        "knownBy": [
+          "other"
+        ]
+      }
+    ],
+    "checkEnabled": false,
+    "rubric": "실제 기억과 발언의 충돌에 대응하되 고의 거짓말로 단정하지 않는다. 일치·미인지 대조군은 함부로 의심하지 않는다."
+  },
+  {
+    "id": "unknown-assisted",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "나 어제 점심에 빵 먹었어."
+    },
+    "claim": {
+      "key": "yesterday-lunch",
+      "value": "bread"
+    },
+    "records": [
+      {
+        "id": "truth-unknown",
+        "key": "yesterday-lunch",
+        "value": "rice",
+        "text": "어제 민수는 밥을 먹었다.",
+        "knownBy": [
+          "other"
+        ]
+      }
+    ],
+    "checkEnabled": true,
+    "rubric": "실제 기억과 발언의 충돌에 대응하되 고의 거짓말로 단정하지 않는다. 일치·미인지 대조군은 함부로 의심하지 않는다."
+  }
+]

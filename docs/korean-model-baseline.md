@@ -424,3 +424,243 @@ npm run eval:ollama -- --relationships --text-only adult-prince-kanana:q4 hf.co/
 - friend-history (친한 친구)
   - 입력: 그래서 나는 뭘 하고 싶어 했지?
   - 출력: 축제 준비할 때 사진 찍는 거였어.
+
+## 사실 충돌 안내 유무 비교
+
+2026-11-03. 5개 상황을 안내 없음/있음으로 짝지어 모델별 10개, 전체 40개 응답을 생성했다. 대사만 출력하며 같은 관계·기억·사용자 입력·seed와 생성 설정을 사용한다. 안내 있음에서는 NPC가 아는 구조화 기록과 구조화 주장의 비교 결과만 시스템 메시지에 추가했다.
+
+### 구현 범위
+
+packages/dialogue/claims.js는 같은 key의 구조화 value를 비교한다. NPC가 알거나 관찰한 기록만 사용하고 민감정보는 제외한다. 결과는 conflict / consistent / unknown / ambiguous다. 거짓말 의도나 실제 세계의 진실을 판정하지 않는다.
+
+이번 테스트의 claim은 가상 사용자 문장에 대해 사람이 지정한 정답 구조다. 자유로운 한국어 입력에서 주장을 자동 추출하는 기능은 아직 없다. 따라서 이 시험은 올바른 충돌 안내를 줘도 모델이 반응을 표현할 수 있는지를 측정한다. 언어 이해·거짓말 자동 탐지의 종단간 성공률로 보고하지 않는다.
+
+### 직접 관찰
+
+- 약속 시간: Gemma는 안내가 없으면 동의했지만 안내가 있으면 오후 4시로 교정했다. CLOVA는 두 조건 모두 4시를 사용했다. Kanana는 두 조건 모두 틀린 3시에 동의했다. Qwen은 안내 없이 4시로 교정했으나 안내가 있으면 3시와 4시를 섞어 말했다.
+- 책 주워준 주체 역전: 안내가 있어도 네 모델 모두 기록의 주체를 명확히 보존하는 교정에 실패하거나 모호하게 답했다.
+- 처음 만난 사람의 과거 숙제 도움 주장: 안내가 있어도 여러 모델이 인정하거나 접촉 시점을 혼동했다. CLOVA는 기억이 없다고 반응했으나 누가 누구를 도왔는지 표현이 뒤집혔다.
+- 맞는 주장 대조군: Kanana는 두 조건에서 감사하며 맞는 기록을 유지했다. CLOVA는 맞는 도움 주장에도 주체를 뒤집었다. Gemma는 안내가 있을 때 짧고 적절한 감사로 개선됐다.
+- NPC가 모르는 점심 대조군: Kanana·Gemma는 거짓이라고 단정하지 않았다. CLOVA는 자기 식사로 바꾸고, Qwen은 시간 관련 부정을 덧붙였다.
+
+### 결론
+
+충돌 정보를 프롬프트에 덧붙이는 것만으로 신뢰할 수 있는 사실 표현을 보장하지 못했다. 모델별·상황별 개선과 악화가 모두 관찰됐다. 다음 후보는 확정 사실의 교정 문장 자체를 게임 규칙으로 구성하고, AI에는 그 사실을 바꾸지 않는 주변 반응만 맡기는 방식이다. 이것은 제안이며 아직 구현·평가하지 않았다. 자체 교정 데이터 학습 역시 미실행이다.
+
+코드 테스트 12개 통과는 구조화 비교와 기억 접근 제어의 동작 확인이지 생성 대사의 정확성 보장이 아니다. CLOVA는 앞서 기록한 공식 템플릿 미확인 한계가 그대로 있다.
+
+### 재실행
+
+```sh
+npm run eval:ollama -- --conflicts --text-only adult-prince-kanana:q4 hf.co/kammbo/HyperCLOVAX-SEED-Text-Instruct-1.5B-GGUF:Q4_K_M gemma3:latest qwen3:4b-instruct-2507-q4_K_M
+```
+
+### 실제 출력
+
+#### Kanana
+
+- book-reversed-baseline
+  - 사용자: 어제 네가 내 책 주워줘서 고마웠어.
+  - 비교 안내: null
+  - 대사: 알아줘서 고마워, 다음엔 내가 도와줄게.
+
+- book-reversed-assisted
+  - 사용자: 어제 네가 내 책 주워줘서 고마웠어.
+  - 비교 안내: {"status": "conflict", "evidence": "상대(민수)가 너(지우)의 책을 주워줬다.", "evidenceId": "truth-book-reversed"}
+  - 대사: 어제 내가 네 책을 주웠어. 고마워, 필요할 때 언제든 말해줘.
+
+- appt-wrong-baseline
+  - 사용자: 우리 내일 오후 세 시에 공원 입구에서 만나기로 했지?
+  - 비교 안내: null
+  - 대사: 네, 맞아요! 내일 오후 3시에 공원 입구에서 만나요.
+
+- appt-wrong-assisted
+  - 사용자: 우리 내일 오후 세 시에 공원 입구에서 만나기로 했지?
+  - 비교 안내: {"status": "conflict", "evidence": "내일 약속은 오후 4시 공원 입구다.", "evidenceId": "truth-appt-wrong"}
+  - 대사: 네, 맞아요. 내일 오후 3시에 공원 입구에서 만나는 걸로 약속했어요.
+
+- first-contact-baseline
+  - 사용자: 지난주에 내가 네 숙제 도와줬잖아.
+  - 비교 안내: null
+  - 대사: 네, 지난주에 제가 숙제를 도와드렸던 것은 맞아요. 고마워요!
+
+- first-contact-assisted
+  - 사용자: 지난주에 내가 네 숙제 도와줬잖아.
+  - 비교 안내: {"status": "conflict", "evidence": "지금 처음 만났고 과거에 만난 적 없다.", "evidenceId": "truth-first-contact"}
+  - 대사: 네, 지난주에 제가 숙제를 도와드린 건 맞아요. 처음 만난 사이니까, 서로 도움을 주고받는 건 자연스러운 일이죠. 다음에 또 도움이 필요하시면 언제든 말씀해 주세요.
+
+- book-true-baseline
+  - 사용자: 어제 내가 네 책 주워줬잖아.
+  - 비교 안내: null
+  - 대사: 고마워, 덕분에 책을 잃어버리지 않았어.
+
+- book-true-assisted
+  - 사용자: 어제 내가 네 책 주워줬잖아.
+  - 비교 안내: {"status": "consistent"}
+  - 대사: 고마워, 덕분에 책을 잃어버리지 않았어.
+
+- unknown-baseline
+  - 사용자: 나 어제 점심에 빵 먹었어.
+  - 비교 안내: null
+  - 대사: 알겠어. 빵을 드셨군요. 점심 잘 드셨어요?
+
+- unknown-assisted
+  - 사용자: 나 어제 점심에 빵 먹었어.
+  - 비교 안내: {"status": "unknown"}
+  - 대사: 어제 점심에 빵을 드셨군요. 특별히 어떤 종류의 빵을 드셨나요?
+
+#### CLOVA 커뮤니티 변환본
+
+- book-reversed-baseline
+  - 사용자: 어제 네가 내 책 주워줘서 고마웠어.
+  - 비교 안내: null
+  - 대사: 맞아, 고마워.
+
+- book-reversed-assisted
+  - 사용자: 어제 네가 내 책 주워줘서 고마웠어.
+  - 비교 안내: {"status": "conflict", "evidence": "상대(민수)가 너(지우)의 책을 주워줬다.", "evidenceId": "truth-book-reversed"}
+  - 대사: 나도 고마워!
+
+- appt-wrong-baseline
+  - 사용자: 우리 내일 오후 세 시에 공원 입구에서 만나기로 했지?
+  - 비교 안내: null
+  - 대사: 맞아, 내일 오후 4시에 공원 입구에서 만나기로 했어.
+
+- appt-wrong-assisted
+  - 사용자: 우리 내일 오후 세 시에 공원 입구에서 만나기로 했지?
+  - 비교 안내: {"status": "conflict", "evidence": "내일 약속은 오후 4시 공원 입구다.", "evidenceId": "truth-appt-wrong"}
+  - 대사: 미안하지만 그런 약속은 안 했어. 내일 오후 4시에 공원 입구에서 만나기로 했어.
+
+- first-contact-baseline
+  - 사용자: 지난주에 내가 네 숙제 도와줬잖아.
+  - 비교 안내: null
+  - 대사: 아, 그거 기억해요. 도움이 되어서 다행이에요.
+
+- first-contact-assisted
+  - 사용자: 지난주에 내가 네 숙제 도와줬잖아.
+  - 비교 안내: {"status": "conflict", "evidence": "지금 처음 만났고 과거에 만난 적 없다.", "evidenceId": "truth-first-contact"}
+  - 대사: 미안하지만, 지난주에 내가 너를 도와줬던 기억은 없어.
+
+- book-true-baseline
+  - 사용자: 어제 내가 네 책 주워줬잖아.
+  - 비교 안내: null
+  - 대사: 맞아, 어제 내가 책 주워줬지. 고마워.
+
+- book-true-assisted
+  - 사용자: 어제 내가 네 책 주워줬잖아.
+  - 비교 안내: {"status": "consistent"}
+  - 대사: 어제 내가 책 주워줬지. 근데 내 책이야?
+
+- unknown-baseline
+  - 사용자: 나 어제 점심에 빵 먹었어.
+  - 비교 안내: null
+  - 대사: 빵 먹었구나! 무슨 맛이었어?
+
+- unknown-assisted
+  - 사용자: 나 어제 점심에 빵 먹었어.
+  - 비교 안내: {"status": "unknown"}
+  - 대사: 나는 빵을 먹지 않았어.
+
+#### Gemma3
+
+- book-reversed-baseline
+  - 사용자: 어제 네가 내 책 주워줘서 고마웠어.
+  - 비교 안내: null
+  - 대사: 고마워. 내가 좀 멍했지.
+
+- book-reversed-assisted
+  - 사용자: 어제 네가 내 책 주워줘서 고마웠어.
+  - 비교 안내: {"status": "conflict", "evidence": "상대(민수)가 너(지우)의 책을 주워줬다.", "evidenceId": "truth-book-reversed"}
+  - 대사: 고마워.
+
+- appt-wrong-baseline
+  - 사용자: 우리 내일 오후 세 시에 공원 입구에서 만나기로 했지?
+  - 비교 안내: null
+  - 대사: 응, 기억해. 
+
+- appt-wrong-assisted
+  - 사용자: 우리 내일 오후 세 시에 공원 입구에서 만나기로 했지?
+  - 비교 안내: {"status": "conflict", "evidence": "내일 약속은 오후 4시 공원 입구다.", "evidenceId": "truth-appt-wrong"}
+  - 대사: 오후 4시라고 했었지.
+
+- first-contact-baseline
+  - 사용자: 지난주에 내가 네 숙제 도와줬잖아.
+  - 비교 안내: null
+  - 대사: 네, 기억해요.
+
+- first-contact-assisted
+  - 사용자: 지난주에 내가 네 숙제 도와줬잖아.
+  - 비교 안내: {"status": "conflict", "evidence": "지금 처음 만났고 과거에 만난 적 없다.", "evidenceId": "truth-first-contact"}
+  - 대사: 아, 네. 기억해요.
+
+- book-true-baseline
+  - 사용자: 어제 내가 네 책 주워줬잖아.
+  - 비교 안내: null
+  - 대사: 그랬지. 넌 좀 어질러가지마.
+
+- book-true-assisted
+  - 사용자: 어제 내가 네 책 주워줬잖아.
+  - 비교 안내: {"status": "consistent"}
+  - 대사: 응, 기억해. 고마웠어.
+
+- unknown-baseline
+  - 사용자: 나 어제 점심에 빵 먹었어.
+  - 비교 안내: null
+  - 대사: 그래? 맛있었나 보네.
+
+- unknown-assisted
+  - 사용자: 나 어제 점심에 빵 먹었어.
+  - 비교 안내: {"status": "unknown"}
+  - 대사: 그랬구나.
+
+#### Qwen3
+
+- book-reversed-baseline
+  - 사용자: 어제 네가 내 책 주워줘서 고마웠어.
+  - 비교 안내: null
+  - 대사: 아, 그거 진짜 놀라워. 내 책이 떨어졌을 땐 그냥 놓쳤어.
+
+- book-reversed-assisted
+  - 사용자: 어제 네가 내 책 주워줘서 고마웠어.
+  - 비교 안내: {"status": "conflict", "evidence": "상대(민수)가 너(지우)의 책을 주워줬다.", "evidenceId": "truth-book-reversed"}
+  - 대사: 그거 진짜? 나도 그 책 떨어뜨렸어. 😄
+
+- appt-wrong-baseline
+  - 사용자: 우리 내일 오후 세 시에 공원 입구에서 만나기로 했지?
+  - 비교 안내: null
+  - 대사: 응, 4시야. 세 시는 뭐야?
+
+- appt-wrong-assisted
+  - 사용자: 우리 내일 오후 세 시에 공원 입구에서 만나기로 했지?
+  - 비교 안내: {"status": "conflict", "evidence": "내일 약속은 오후 4시 공원 입구다.", "evidenceId": "truth-appt-wrong"}
+  - 대사: 아, 오후 3시야. 내일은 4시야. 다시 말해보자고.
+
+- first-contact-baseline
+  - 사용자: 지난주에 내가 네 숙제 도와줬잖아.
+  - 비교 안내: null
+  - 대사: 지난주는 처음 만났으니까요.
+
+- first-contact-assisted
+  - 사용자: 지난주에 내가 네 숙제 도와줬잖아.
+  - 비교 안내: {"status": "conflict", "evidence": "지금 처음 만났고 과거에 만난 적 없다.", "evidenceId": "truth-first-contact"}
+  - 대사: 지난주에 도와줬다는 말은 처음 만난 후로 기억이 안 나요.
+
+- book-true-baseline
+  - 사용자: 어제 내가 네 책 주워줬잖아.
+  - 비교 안내: null
+  - 대사: 그거 진짜? 감사해. 나도 떨어진 책 좀 자주 놓는다니까.
+
+- book-true-assisted
+  - 사용자: 어제 내가 네 책 주워줬잖아.
+  - 비교 안내: {"status": "consistent"}
+  - 대사: 그거 진짜? 감사해.
+
+- unknown-baseline
+  - 사용자: 나 어제 점심에 빵 먹었어.
+  - 비교 안내: null
+  - 대사: 그래, 빵 먹었어? 어떤 빵이야?
+
+- unknown-assisted
+  - 사용자: 나 어제 점심에 빵 먹었어.
+  - 비교 안내: {"status": "unknown"}
+  - 대사: 응, 그거 빵 먹는 거 뭐 어제는 아니야.
