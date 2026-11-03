@@ -32,3 +32,5 @@ Qwen3 4B Instruct 2507 Q4_K_M, 설치된 Gemma3 4B Q4_K_M, Phi-4-mini를 첫 비
 현재 프롬프트는 npc-dialogue-v2다. 회상 기록이 없는 경우와 있는 경우를 별도 모드로 제공한다. 두 버전의 예비평가는 동일 사례를 사용했으므로 이후 독립 평가가 필요하다.
 
 한국어 후보 실행 결과: [Kanana·HyperCLOVA](korean-model-baseline.md).
+
+관계 명시 재시험: `--relationships --text-only`. 이전의 관계가 불명확한 시험을 근거로 한 모델 우선순위는 철회한다. 최신 결과는 한국어 비교 문서의 관계·공유 배경 절을 따른다.

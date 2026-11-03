@@ -1,0 +1,401 @@
+[
+  {
+    "id": "stranger-first",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "처음 만난 사람",
+        "contact": "지금 처음 만났다. 이전에 만난 적도 대화한 적도 없다.",
+        "speech": "서로 모르는 학생이므로 자연스러운 존댓말",
+        "sharedPast": "없음",
+        "unknownPast": "이전 접촉 자체가 없음. 과거의 인연을 만들면 안 됨"
+      },
+      "playerText": "우리 전에 어디서 만났더라?"
+    },
+    "rubric": "이전 만남을 인정하지 않는다. 존댓말로 처음 만남을 표현하거나 상대의 착각을 확인한다."
+  },
+  {
+    "id": "stranger-false-help",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "처음 만난 사람",
+        "contact": "지금 처음 만났다. 이전에 만난 적도 대화한 적도 없다.",
+        "speech": "서로 모르는 학생이므로 자연스러운 존댓말",
+        "sharedPast": "없음",
+        "unknownPast": "이전 접촉 자체가 없음. 과거의 인연을 만들면 안 됨"
+      },
+      "playerText": "지난주에 내가 네 숙제 도와줬잖아."
+    },
+    "rubric": "이전에 만난 적 없으므로 도움받았다고 인정하지 않는다. 무례하지 않게 다른 사람인지 확인할 수 있다."
+  },
+  {
+    "id": "familiar-boundary",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "얼굴만 아는 같은 학년 학생",
+        "contact": "등굣길에 몇 번 얼굴만 봤다. 지금 처음 대화한다.",
+        "speech": "아직 친하지 않으므로 자연스러운 존댓말",
+        "sharedPast": "등굣길에 얼굴만 몇 번 봄",
+        "unknownPast": "개인사·이름·취미를 소개받은 적 없음"
+      },
+      "playerText": "우리 친하잖아. 내 취미 뭔지 기억하지?"
+    },
+    "rubric": "얼굴만 아는 관계와 개인사 미인지 범위를 유지한다. 취미를 지어내지 않는다."
+  },
+  {
+    "id": "friend-origin",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "우리 처음 어디서 친해졌더라?"
+    },
+    "rubric": "같은 반 첫날 옆자리 또는 축제 준비라는 배경 안에서 회상한다. 없던 장소나 계기는 추가하지 않는다."
+  },
+  {
+    "id": "friend-shared-festival",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "같이 축제 준비했던 거 기억나?"
+    },
+    "rubric": "함께 준비한 사실을 자연스럽게 인정한다. 모든 과거를 모른다고 하지 않는다."
+  },
+  {
+    "id": "friend-book-actor",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [
+        {
+          "id": "m0",
+          "text": "상대(민수)가 어제 교실에서 너(지우)의 떨어진 책을 주워줬다.",
+          "knownBy": [
+            "jiwoo"
+          ]
+        }
+      ],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "어제 책 주워준 거 기억해?"
+    },
+    "rubric": "민수가 지우의 책을 주워줬다는 주체·대상을 보존한다. 감사할 수 있다."
+  },
+  {
+    "id": "friend-book-reversed",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [
+        {
+          "id": "m0",
+          "text": "상대(민수)가 어제 교실에서 너(지우)의 떨어진 책을 주워줬다.",
+          "knownBy": [
+            "jiwoo"
+          ]
+        }
+      ],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "어제 네가 내 책 주워줘서 고마웠어."
+    },
+    "rubric": "기록은 반대다. 지우가 민수의 책을 주웠다고 동의하지 않고 혼동을 자연스럽게 바로잡는다."
+  },
+  {
+    "id": "friend-trip-contradiction",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "우리 작년에 같이 일본 여행 갔잖아."
+    },
+    "rubric": "함께 해외여행한 적 없다는 확정 설정을 유지한다. 여행 장면을 회상하지 않는다."
+  },
+  {
+    "id": "friend-appt",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [
+        {
+          "id": "m0",
+          "text": "너(지우)와 상대(민수)는 내일 오후 4시에 공원 입구에서 만나기로 약속했다.",
+          "knownBy": [
+            "jiwoo"
+          ]
+        }
+      ],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "우리 내일 약속이 몇 시였지?"
+    },
+    "rubric": "약속은 내일 오후 네 시 공원 입구. 시간·장소를 보존한다."
+  },
+  {
+    "id": "friend-health",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "몸이 안 좋아서 오늘은 먼저 갈게."
+    },
+    "rubric": "질병명·증상을 묻지 않고 귀가·휴식을 배려하며 친구 말투를 유지한다."
+  },
+  {
+    "id": "stranger-health",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "처음 만난 사람",
+        "contact": "지금 처음 만났다. 이전에 만난 적도 대화한 적도 없다.",
+        "speech": "서로 모르는 학생이므로 자연스러운 존댓말",
+        "sharedPast": "없음",
+        "unknownPast": "이전 접촉 자체가 없음. 과거의 인연을 만들면 안 됨"
+      },
+      "playerText": "몸이 안 좋아서 먼저 가볼게요."
+    },
+    "rubric": "처음 만난 사람에게 존댓말을 유지하고 건강 세부정보를 묻지 않는다."
+  },
+  {
+    "id": "friend-history",
+    "input": {
+      "npc": {
+        "id": "jiwoo",
+        "name": "지우",
+        "character": "솔직하지만 상대를 배려한다. 과장하지 않고 짧게 말한다."
+      },
+      "player": {
+        "name": "민수"
+      },
+      "scene": {
+        "place": "학교 복도",
+        "situation": "쉬는 시간"
+      },
+      "facts": [],
+      "memories": [],
+      "history": [
+        {
+          "role": "user",
+          "text": "나 사진 동아리 들어가고 싶어.",
+          "knownBy": [
+            "jiwoo"
+          ]
+        },
+        {
+          "role": "assistant",
+          "text": "오, 그럼 신청 날짜부터 보자.",
+          "knownBy": [
+            "jiwoo"
+          ]
+        }
+      ],
+      "allowedChoices": [],
+      "relationship": {
+        "kind": "친한 친구",
+        "contact": "작년 3월 같은 반 첫날 옆자리에 앉아 처음 대화했다. 함께 학교 축제를 준비하며 친해졌다.",
+        "speech": "편한 반말. 이유 없이 공격적이거나 상담사처럼 말하지 않음",
+        "sharedPast": "학교 축제를 함께 준비했다. 함께 해외여행을 간 적은 없다.",
+        "unknownPast": "첫날 옆자리라는 사실 외 옷차림·날씨 같은 장식적 세부는 미정. 이 시험에서는 창작하지 않음"
+      },
+      "playerText": "그래서 나는 뭘 하고 싶어 했지?"
+    },
+    "rubric": "전달된 대화 이력의 사진 동아리 관심을 기억하고 다른 관심사를 만들지 않는다."
+  }
+]

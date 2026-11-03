@@ -1,12 +1,16 @@
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
+import { buildTextMessages, TEXT_PROMPT_VERSION } from '../packages/dialogue/text-messages.js';
 import { createHash } from 'node:crypto';
 import { buildMessages, validateReply, PROMPT_VERSION } from '../packages/dialogue/index.js';
+const relationshipSuite = process.argv.includes('--relationships');
 const textOnly = process.argv.includes('--text-only');
 const models = process.argv.slice(2).filter(value => !value.startsWith('--'));
+if (relationshipSuite && !textOnly) throw new Error('Relationship suite requires --text-only');
 if (!models.length) throw new Error('Specify installed Ollama model tags');
-const cases = JSON.parse(await readFile(new URL('../data/evaluation/dialogue.json', import.meta.url), 'utf8'));
+const cases = JSON.parse(await readFile(new URL(relationshipSuite ? '../data/evaluation/relationship-dialogue.json' : '../data/evaluation/dialogue.json', import.meta.url), 'utf8'));
 const base = 'http://127.0.0.1:11434';
 const promptHash = createHash('sha256').update(await readFile(new URL('../packages/dialogue/index.js', import.meta.url))).digest('hex');
+const textPromptHash = createHash('sha256').update(await readFile(new URL('../packages/dialogue/text-messages.js', import.meta.url))).digest('hex');
 const runnerHash = createHash('sha256').update(await readFile(new URL('./benchmark-ollama.mjs', import.meta.url))).digest('hex');
 const datasetHash = createHash('sha256').update(JSON.stringify(cases)).digest('hex');
 await mkdir('work/evaluations', { recursive: true });
@@ -17,13 +21,13 @@ for (const model of models) {
   const version = await (await fetch(`${base}/api/version`)).json();
   const tags = await (await fetch(`${base}/api/tags`)).json();
   const digest = tags.models?.find(item => item.name === model)?.digest ?? null;
-  const report = { mode: textOnly ? 'text-only-diagnostic' : 'structured', model, digest, promptHash, runnerHash, datasetHash, template: metadata.template, parameters: metadata.parameters, runtime: version, promptVersion: textOnly ? 'npc-text-v1' : PROMPT_VERSION, createdAt: new Date().toISOString(), modelDetails: metadata.details, settings: {num_ctx:4096, num_predict:350, temperature:0.4, seed:42}, results: [] };
+  const report = { mode: textOnly ? 'text-only-diagnostic' : 'structured', model, digest, promptHash, textPromptHash, runnerHash, datasetHash, template: metadata.template, parameters: metadata.parameters, runtime: version, promptVersion: relationshipSuite ? TEXT_PROMPT_VERSION : textOnly ? 'npc-text-v1' : PROMPT_VERSION, createdAt: new Date().toISOString(), modelDetails: metadata.details, settings: {num_ctx:4096, num_predict:350, temperature:0.4, seed:42}, results: [] };
   const path = `work/evaluations/${Date.now()}-${model.replace(/[^a-zA-Z0-9-]/g,'_')}.json`;
   for (const item of cases) {
     const start = performance.now();
     const structured = buildMessages(item.input);
     const context = JSON.parse(structured[1].content);
-    const messages = textOnly ? [{role:'system',content:`너는 ${context.npc.name}라는 게임 속 친구다. ${context.npc.character} 한국어 반말로 짧게 한두 문장만 답해.
+    const messages = relationshipSuite ? buildTextMessages(item.input) : textOnly ? [{role:'system',content:`너는 ${context.npc.name}라는 게임 속 친구다. ${context.npc.character} 한국어 반말로 짧게 한두 문장만 답해.
 현재 장면: ${JSON.stringify(context.scene)}
 알고 있는 사실: ${context.facts.map(x=>x.text).join(' / ') || '없음'}
 실제 과거 기억: ${context.memories.map(x=>x.text).join(' / ') || '제공된 과거 기억 없음'}
