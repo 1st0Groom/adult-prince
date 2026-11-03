@@ -2984,3 +2984,100 @@ NPC가 스스로 한 활동을 게임 이벤트로 기록하고, 당사자는 �
 `generateRememberingNpcTurn` 실험 경로는 해당 NPC의 게임 상태에서 기억을 선택하고, 모호성 판단과 예의 반응을 거쳐 기록 답변 또는 자유 대화로 연결한다. 호출자가 임의의 `memories`를 끼워 넣는 대신 선택된 NPC 자신의 기록을 사용한다. 기존 기본 대화 경로를 자동으로 바꾸지는 않는다. 테스트 56개 통과.
 
 도서관에서 함께 책을 고른 옛 기억 뒤에 일상 기록 9개를 추가하고, 직전 대화에서 ‘도서관 얘기야’라고 한 다음 ‘거기 기억나?’라고 물었다. 선택된 3개 기록에 도서관 사건이 포함되었고, 실제 큐웬 자유 생성은 ‘응! 도서관에서 책 골랐어.’라고 답했다. 이 실행의 의도 분류는 0을 반환하는 모의 함수로 통과시켰다. 따라서 실제 모델의 의도 분류까지 연결한 통합 성공은 아니다. 단일 사례로 정확성 전반을 입증할 수 없고 UI·게임 서버도 미연결이다. 모호한 두 기억을 확인 질문으로 넘기는 것은 별도 자동 테스트로 검증했다.
+
+
+## 기억 선택부터 실제 모델 응답까지 비교
+
+네 로컬 모델을 사용해 오래된 도서관 기억, 두 대상이 모호한 경우, 처음 만난 사람에게 허위 과거를 주장하는 경우, 아파서 귀가하는 경우를 각각 실행했다. 게임 상태를 JSON으로 복원한 뒤 `generateRememberingNpcTurn`을 호출했으며, 의도 분류가 필요한 경우 실제 모델을 호출했다. 선택된 기억과 모델에 전달된 메시지·원문은 `work/evaluations`의 실험 보고서에 남는다. 예의 행동은 테스트가 `neutral`로 명시했으므로 반말·무례함의 자유 입력 분류 시험은 아니다.
+
+오래된 도서관 기억은 네 모델 모두 관련 기록을 선택했다. 카나나·젬마·큐웬은 도서관이나 책을 언급했고, CLOVA 변환본은 기억한다고 답했지만 장소를 다시 말하지 않았다. 두 대상은 게임 규칙이 모호하다고 판단해 네 경우 모두 확인 질문을 출력했다. 처음 만난 사람의 허위 과거도 네 경우 모두 게임 규칙으로 정정했다. 이 두 결과는 모델이 스스로 정확히 추론했다는 의미가 아니다.
+
+건강 언급에는 네 모델 모두 구체적 증상을 묻지 않았지만, 큐웬은 NPC 자신이 피곤해 보인다고 말해 화자를 혼동했다. 이 작은 고정 표본에서 모델 우열이나 일반적인 대화 품질을 확정할 수 없다. 실제 게임 UI·서버, 자유 입력에서의 예의 행동 판정, 장기 저장은 여전히 이 시험 범위 밖이다.
+
+### 연결 실험 — adult-prince-kanana:q4
+
+- 상황: old-reference / free-dialogue / 기억 candidate
+- 플레이어: 거기 기억나?
+- NPC: 아, 도서관에서 책 고른 거? 그때 뭐 보고 싶었어?
+- 실제 모델 호출: classification, free
+
+- 상황: two-topics / clarify-reference / 기억 ambiguous
+- 플레이어: 그거 기억나?
+- NPC: 어떤 거 말하는 거야?
+- 실제 모델 호출: 없음; 게임 규칙 응답
+
+- 상황: unknown-stranger / record-answer / 기억 not-reference
+- 플레이어: 지난주 우리 같이 야구 봤잖아요. 기억나요?
+- NPC: 저는 오늘 처음 뵙는데, 혹시 다른 분이랑 헷갈리신 거 아니에요?
+- 실제 모델 호출: 없음; 게임 규칙 응답
+
+- 상황: health / free-dialogue / 기억 not-reference
+- 플레이어: 몸이 안 좋아서 오늘은 먼저 들어갈게.
+- NPC: 알겠어, 괜찮아. 다음에 보자!
+- 실제 모델 호출: classification, free
+
+### 연결 실험 — hf.co/kammbo/HyperCLOVAX-SEED-Text-Instruct-1.5B-GGUF:Q4_K_M
+
+- 상황: old-reference / free-dialogue / 기억 candidate
+- 플레이어: 거기 기억나?
+- NPC: 네, 기억해요. 어떤 책 봤었죠?
+- 실제 모델 호출: classification, free
+
+- 상황: two-topics / clarify-reference / 기억 ambiguous
+- 플레이어: 그거 기억나?
+- NPC: 어떤 거 말하는 거야?
+- 실제 모델 호출: 없음; 게임 규칙 응답
+
+- 상황: unknown-stranger / record-answer / 기억 not-reference
+- 플레이어: 지난주 우리 같이 야구 봤잖아요. 기억나요?
+- NPC: 저는 오늘 처음 뵙는데, 혹시 다른 분이랑 헷갈리신 거 아니에요?
+- 실제 모델 호출: 없음; 게임 규칙 응답
+
+- 상황: health / free-dialogue / 기억 not-reference
+- 플레이어: 몸이 안 좋아서 오늘은 먼저 들어갈게.
+- NPC: 알았어, 빨리 나아라.
+- 실제 모델 호출: classification, free
+
+### 연결 실험 — gemma3:latest
+
+- 상황: old-reference / free-dialogue / 기억 candidate
+- 플레이어: 거기 기억나?
+- NPC: 응, 기억나. 민수랑 책 고르는 거. 😊
+- 실제 모델 호출: classification, free
+
+- 상황: two-topics / clarify-reference / 기억 ambiguous
+- 플레이어: 그거 기억나?
+- NPC: 어떤 거 말하는 거야?
+- 실제 모델 호출: 없음; 게임 규칙 응답
+
+- 상황: unknown-stranger / record-answer / 기억 not-reference
+- 플레이어: 지난주 우리 같이 야구 봤잖아요. 기억나요?
+- NPC: 저는 오늘 처음 뵙는데, 혹시 다른 분이랑 헷갈리신 거 아니에요?
+- 실제 모델 호출: 없음; 게임 규칙 응답
+
+- 상황: health / free-dialogue / 기억 not-reference
+- 플레이어: 몸이 안 좋아서 오늘은 먼저 들어갈게.
+- NPC: 아, 그래? 얼른 쉬어!
+- 실제 모델 호출: classification, free
+
+### 연결 실험 — qwen3:4b-instruct-2507-q4_K_M
+
+- 상황: old-reference / free-dialogue / 기억 candidate
+- 플레이어: 거기 기억나?
+- NPC: 물론이야. 도서관에서 책 골랐어. 😄
+- 실제 모델 호출: classification, free
+
+- 상황: two-topics / clarify-reference / 기억 ambiguous
+- 플레이어: 그거 기억나?
+- NPC: 어떤 거 말하는 거야?
+- 실제 모델 호출: 없음; 게임 규칙 응답
+
+- 상황: unknown-stranger / record-answer / 기억 not-reference
+- 플레이어: 지난주 우리 같이 야구 봤잖아요. 기억나요?
+- NPC: 저는 오늘 처음 뵙는데, 혹시 다른 분이랑 헷갈리신 거 아니에요?
+- 실제 모델 호출: 없음; 게임 규칙 응답
+
+- 상황: health / free-dialogue / 기억 not-reference
+- 플레이어: 몸이 안 좋아서 오늘은 먼저 들어갈게.
+- NPC: 아, 그래도 괜찮아? 나도 좀 피곤해 보이는데… 푹 쉬고 나중에 다시 만나자!
+- 실제 모델 호출: classification, free

@@ -12,7 +12,8 @@
     "eval:facts": "node scripts/evaluate-fact-routing.mjs",
     "eval:training": "node scripts/evaluate-training.mjs",
     "eval:daily": "node scripts/evaluate-npc-daily.mjs",
-    "eval:memory-selection": "node scripts/evaluate-memory-selection.mjs"
+    "eval:memory-selection": "node scripts/evaluate-memory-selection.mjs",
+    "eval:remembering": "node scripts/evaluate-remembering.mjs"
   },
   "engines": {
     "node": ">=22"
