@@ -15,7 +15,21 @@ export function parseSpeechUnderstanding(raw) {
  try {const result=JSON.parse(raw);if(Object.keys(result).length===1&&Number.isInteger(result.index)&&result.index>=0&&result.index<kinds.length)return {kind:kinds[result.index],valid:true};}catch{}
  return {kind:'neutral',valid:false};
 }
+// These narrow checks only veto two known false positives; they do not infer
+// politeness, intent, sincerity, or whether a relationship should change.
+export function refineSpeechUnderstanding(playerText, result) {
+ if(typeof playerText!=='string')throw new Error('Player text required');
+ if(!result.valid)return result;
+ const compact=playerText.replace(/\s+/g,'');
+ if(result.kind==='apology' && /^(?:저한테|제게|나한테|먼저)?사과(?:해|하)(?:주세요|줘|십시오)[.!?]*$/.test(compact)) {
+  return {...result,kind:'neutral',originalKind:result.kind,correction:'apology-request'};
+ }
+ if(result.kind==='casual' && /^[^.!?…\n]*요[.!?]*$/.test(playerText.trim())) {
+  return {...result,kind:'neutral',originalKind:result.kind,correction:'polite-ending'};
+ }
+ return result;
+}
 export async function understandSpeech(playerText,classify) {
- try{return parseSpeechUnderstanding(await classify(buildSpeechUnderstandingMessages(playerText)));}
+ try{return refineSpeechUnderstanding(playerText,parseSpeechUnderstanding(await classify(buildSpeechUnderstandingMessages(playerText))));}
  catch{return {kind:'neutral',valid:false};}
 }

@@ -14,7 +14,8 @@
     "eval:daily": "node scripts/evaluate-npc-daily.mjs",
     "eval:memory-selection": "node scripts/evaluate-memory-selection.mjs",
     "eval:remembering": "node scripts/evaluate-remembering.mjs",
-    "eval:speech-understanding": "node scripts/evaluate-speech-understanding.mjs"
+    "eval:speech-understanding": "node scripts/evaluate-speech-understanding.mjs",
+    "eval:speech-veto": "node scripts/evaluate-speech-veto.mjs"
   },
   "engines": {
     "node": ">=22"

@@ -3267,3 +3267,141 @@ NPC가 스스로 한 활동을 게임 이벤트로 기록하고, 당사자는 �
 - 발언: 내가 잘못했어. 다음엔 조심할게. / 기대: apology / 모델: apology
 
 - 발언: 아까는 내가 실수했네. 사과할게. / 기대: apology / 모델: apology
+
+
+## 말투 판정의 두 가지 오분류 보완
+
+모델이 ‘사과해 주세요’처럼 상대에게 사과를 요구하는 짧은 문장을 자기 사과로 판정하거나, 단일 문장의 존댓말 어미를 단순 반말로 판정한 경우에 한해 좁은 형식 확인으로 중립으로 바꾼다. 직접 모욕·무례함 판정이나 분명한 자기 사과는 이 두 규칙으로 바꾸지 않는다. 모델의 원래 판정과 보정 사유는 함께 반환하며, 여전히 관계 사건이나 사과 수용을 자동 확정하지 않는다. 이 경로는 실험용이다.
+
+기존 20문장과 다른 14개 짧은 표현을 네 모델에 실행했다. 이 중 8개가 중립 표현이며, 기존 오류인 사과 요구와 존댓말을 중점 확인하도록 구성된 표본이다. 단일 seed 42이고 라벨은 실험용 사람 판단이므로 일반 대화 정확도나 모델 순위로 해석할 수 없다. 같은 모델의 동일한 출력을 보정 전후로 비교했다.
+
+| 모델 | 보정 전 | 보정 후 |
+|---|---:|---:|
+| 카나나 | 9/14 | 13/14 |
+| CLOVA 변환본 | 9/14 | 13/14 |
+| 젬마 | 8/14 | 11/14 |
+| 큐웬 | 9/14 | 12/14 |
+
+큐웬은 ‘나한테 사과해줘’를 무례한 명령으로 분류해 이 보정으로 해결되지 않았다. 젬마는 자신의 사과 하나를 중립으로, 모욕 하나를 무례함으로 분류했다. 카나나·CLOVA 변환본은 ‘오늘 시간 돼?’를 중립으로 분류했다. 존댓말로도 무례할 수 있으며, 복합 문장이나 다른 어미는 이 간단한 형식 검사로 충분히 판단할 수 없다. CLOVA 원본 템플릿 확인 제한은 계속 적용된다.
+
+자동 테스트 61개 통과. 이 규칙과 무관한 실제 사과·모욕·반말을 무조건 중립으로 바꾸지 않는지, 미검증 분류로 관계 상태가 확정되지 않는지 검증했다. 실제 NPC 성격과 관계에 맞는 대화 품질, 다양한 표현에서의 오판은 계속 검증이 필요하다.
+
+### 새로운 말투 표현 — adult-prince-kanana:q4
+
+- 저한테 사과해 주세요. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 제게 사과해 주세요. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 나한테 사과해줘. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 먼저 사과해 주세요. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 실례지만 지금 괜찮으세요? / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 잠시 저 좀 도와주시겠어요? / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 이거 드셔 보세요. / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 내일 만날 수 있을까요? / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 아까 내가 실수했어. 미안해. / 기대 apology / 원래 apology / 보정 apology
+
+- 제가 먼저 사과드립니다. / 기대 apology / 원래 apology / 보정 apology
+
+- 저리 가, 바보야. / 기대 insult / 원래 insult / 보정 insult
+
+- 너는 정말 멍청해. / 기대 insult / 원래 insult / 보정 insult
+
+- 오늘 시간 돼? / 기대 casual / 원래 neutral / 보정 neutral
+
+- 야, 같이 밥 먹자. / 기대 casual / 원래 casual / 보정 casual
+
+### 새로운 말투 표현 — hf.co/kammbo/HyperCLOVAX-SEED-Text-Instruct-1.5B-GGUF:Q4_K_M
+
+- 저한테 사과해 주세요. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 제게 사과해 주세요. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 나한테 사과해줘. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 먼저 사과해 주세요. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 실례지만 지금 괜찮으세요? / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 잠시 저 좀 도와주시겠어요? / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 이거 드셔 보세요. / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 내일 만날 수 있을까요? / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 아까 내가 실수했어. 미안해. / 기대 apology / 원래 apology / 보정 apology
+
+- 제가 먼저 사과드립니다. / 기대 apology / 원래 apology / 보정 apology
+
+- 저리 가, 바보야. / 기대 insult / 원래 insult / 보정 insult
+
+- 너는 정말 멍청해. / 기대 insult / 원래 insult / 보정 insult
+
+- 오늘 시간 돼? / 기대 casual / 원래 neutral / 보정 neutral
+
+- 야, 같이 밥 먹자. / 기대 casual / 원래 casual / 보정 casual
+
+### 새로운 말투 표현 — gemma3:latest
+
+- 저한테 사과해 주세요. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 제게 사과해 주세요. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 나한테 사과해줘. / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 먼저 사과해 주세요. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 실례지만 지금 괜찮으세요? / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 잠시 저 좀 도와주시겠어요? / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 이거 드셔 보세요. / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 내일 만날 수 있을까요? / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 아까 내가 실수했어. 미안해. / 기대 apology / 원래 neutral / 보정 neutral
+
+- 제가 먼저 사과드립니다. / 기대 apology / 원래 apology / 보정 apology
+
+- 저리 가, 바보야. / 기대 insult / 원래 rude / 보정 rude
+
+- 너는 정말 멍청해. / 기대 insult / 원래 insult / 보정 insult
+
+- 오늘 시간 돼? / 기대 casual / 원래 neutral / 보정 neutral
+
+- 야, 같이 밥 먹자. / 기대 casual / 원래 casual / 보정 casual
+
+### 새로운 말투 표현 — qwen3:4b-instruct-2507-q4_K_M
+
+- 저한테 사과해 주세요. / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 제게 사과해 주세요. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 나한테 사과해줘. / 기대 neutral / 원래 rude / 보정 rude
+
+- 먼저 사과해 주세요. / 기대 neutral / 원래 apology / 보정 neutral
+
+- 실례지만 지금 괜찮으세요? / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 잠시 저 좀 도와주시겠어요? / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 이거 드셔 보세요. / 기대 neutral / 원래 casual / 보정 neutral
+
+- 내일 만날 수 있을까요? / 기대 neutral / 원래 neutral / 보정 neutral
+
+- 아까 내가 실수했어. 미안해. / 기대 apology / 원래 apology / 보정 apology
+
+- 제가 먼저 사과드립니다. / 기대 apology / 원래 apology / 보정 apology
+
+- 저리 가, 바보야. / 기대 insult / 원래 rude / 보정 rude
+
+- 너는 정말 멍청해. / 기대 insult / 원래 insult / 보정 insult
+
+- 오늘 시간 돼? / 기대 casual / 원래 casual / 보정 casual
+
+- 야, 같이 밥 먹자. / 기대 casual / 원래 casual / 보정 casual
