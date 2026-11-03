@@ -26,3 +26,10 @@ test('transport uses local model and validates output without mutating input', a
   assert.deepEqual(input, original);
   await assert.rejects(generateReply(input, { baseUrl: 'https://external.example/v1', model: 'x' }));
 });
+
+test('recall mode depends on visible non-sensitive memories only', () => {
+  const hidden = { ...input, memories: [{ id: 'unseen', text: '행사에서 만났다', knownBy: ['other'] }] };
+  assert.equal(JSON.parse(buildMessages(hidden)[1].content).recall.mode, 'no_recollection');
+  const visible = { ...input, memories: [{ id: 'seen', text: '책을 주워줬다', knownBy: ['friend'] }] };
+  assert.equal(JSON.parse(buildMessages(visible)[1].content).recall.mode, 'evidence_only');
+});
