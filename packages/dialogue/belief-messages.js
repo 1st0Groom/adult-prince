@@ -1,7 +1,8 @@
 import { buildMessages } from './index.js';
+import { visibleSocialState } from './visible-social.js';
 export const BELIEF_PROMPT_VERSION='npc-belief-story-v2';
 export function buildBeliefMessages(input){
- const social = input.socialState;
+ const social = visibleSocialState(input.socialState, input.npc?.id);
  const stateText = social ? `원래 합의: ${social.originalAgreement.time}, ${social.originalAgreement.place}. 현재 네가 믿는 시간: ${social.belief.time}. 믿음의 출처: ${social.belief.source}. 현재 서로 합의한 약속: ${social.agreement.time}, ${social.agreement.place}. 원래 합의와 지금 믿는 시간이 다를 수 있다. 실제로 만나러 갈 일정은 현재 서로 합의한 약속이다.` : '별도 저장 정보 없음';
  const context=JSON.parse(buildMessages(input)[1].content);
  if(!input.relationship||!input.personality||!input.stage)throw new Error('Relationship, personality and stage required');

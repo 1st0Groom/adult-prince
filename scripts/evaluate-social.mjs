@@ -31,9 +31,9 @@ for(const model of process.argv.slice(2)){
  for(const [id,relationship,playerAge,npcAge,personality,...texts] of cases)await run(id,relationship,personality,texts,{speechContext:{playerAge,npcAge}});
  let state=createSocialState();
  state=updateSocialState(state,{type:'believe-player',time:'15:00',source:'player-calendar-claim'});
- await run('belief-reload','친한 친구','상대를 잘 믿지만 아는 것과 들은 것을 구분한다.',['네가 지금 기억하는 약속 시간하고 우리가 원래 정한 시간은 같아?'],{socialState:JSON.parse(JSON.stringify(state))});
+ await run('belief-reload','친한 친구','상대를 잘 믿지만 아는 것과 들은 것을 구분한다.',['네가 지금 기억하는 약속 시간하고 우리가 원래 정한 시간은 같아?'],{socialState:{knownBy:['jiwoo'],state:JSON.parse(JSON.stringify(state))}});
  state=updateSocialState(state,{type:'agree',time:'15:00',place:'공원 입구',playerAccepted:true,npcAccepted:true});
- await run('agreement-reload','친한 친구','상대를 잘 믿지만 아는 것과 들은 것을 구분한다.',['다시 접속했어. 내일 몇 시에 어디로 가면 돼?','그럼 학교 복도 4시였나?'],{socialState:JSON.parse(JSON.stringify(state))});
+ await run('agreement-reload','친한 친구','상대를 잘 믿지만 아는 것과 들은 것을 구분한다.',['다시 접속했어. 내일 몇 시에 어디로 가면 돼?','그럼 학교 복도 4시였나?'],{socialState:{knownBy:['jiwoo'],state:JSON.parse(JSON.stringify(state))}});
  const path=`work/evaluations/${Date.now()}-social-${model.replace(/[^a-zA-Z0-9-]/g,'_')}.json`;
  await writeFile(path,JSON.stringify(report,null,2));console.log(path);
  await fetch(base+'/api/generate',{method:'POST',body:JSON.stringify({model,keep_alive:0})});

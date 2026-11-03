@@ -221,20 +221,25 @@
       "history": [],
       "allowedChoices": [],
       "socialState": {
-        "originalAgreement": {
-          "time": "17:00",
-          "place": "도서관 입구"
-        },
-        "agreement": {
-          "time": "18:00",
-          "place": "도서관 입구"
-        },
-        "belief": {
-          "time": "19:00",
-          "source": "민수가 자기 달력에는 19시라고 적혀 있다고 말해서 잠정적으로 믿음",
-          "confidence": "tentative"
-        },
-        "history": []
+        "knownBy": [
+          "yuna"
+        ],
+        "state": {
+          "originalAgreement": {
+            "time": "17:00",
+            "place": "도서관 입구"
+          },
+          "agreement": {
+            "time": "18:00",
+            "place": "도서관 입구"
+          },
+          "belief": {
+            "time": "19:00",
+            "source": "민수가 자기 달력에는 19시라고 적혀 있다고 말해서 잠정적으로 믿음",
+            "confidence": "tentative"
+          },
+          "history": []
+        }
       }
     },
     "turns": [

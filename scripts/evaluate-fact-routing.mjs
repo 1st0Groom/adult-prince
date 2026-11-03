@@ -33,7 +33,7 @@ for (const model of models) {
     if (item.id === 'actor-direction') input.loans = [{ item: '우산', lenderId: input.player.id, borrowerId: input.npc.id, holderId: input.npc.id, knownBy: [input.npc.id] }];
     input.firstMeeting = item.id === 'stranger-claimed-past';
     if (input.socialState) {
-      input.appointmentKnowledge = { knownBy: [input.npc.id], state: structuredClone(input.socialState) };
+      input.appointmentKnowledge = structuredClone(input.socialState);
       input.appointmentKnowledge.state.belief.source = 'player-calendar-claim';
     }
     const sequence = { id: item.id, turns: [] }; report.sequences.push(sequence);

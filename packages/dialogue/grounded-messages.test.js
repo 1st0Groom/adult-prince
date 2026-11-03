@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildGroundedMessages } from './grounded-messages.js';
+import { buildBeliefMessages } from './belief-messages.js';
 const input = () => ({
   npc: { id: 'jiwoo', name: '지우' }, player: { id: 'minsu', name: '민수' },
   personality: '장난스럽지만 배려한다', relationship: '친한 친구', speech: 'casual',
@@ -29,4 +30,14 @@ test('Missing identity or unbound interaction participants are rejected', () => 
   assert.throws(() => buildGroundedMessages({ ...input(), player: undefined }));
   const value = input(); value.interactions[0].targetId = 'other';
   assert.throws(() => buildGroundedMessages(value));
+});
+test('Both prompt builders exclude another NPC’s or sensitive social state', () => {
+  const value=input();
+  const state={originalAgreement:{time:'17:00',place:'비밀 장소'},agreement:{time:'18:00',place:'비밀 장소'},belief:{time:'19:00',source:'private'}};
+  for (const build of [buildGroundedMessages,buildBeliefMessages]) {
+    for (const record of [{knownBy:['other'],state},{knownBy:'other-jiwoo',state},{knownBy:['jiwoo'],sensitive:true,state},state]) {
+      assert.equal(JSON.stringify(build({...value,socialState:record})).includes('비밀 장소'),false);
+    }
+    assert.equal(JSON.stringify(build({...value,socialState:{knownBy:['jiwoo'],state}})).includes('비밀 장소'),true);
+  }
 });

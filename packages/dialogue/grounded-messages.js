@@ -1,4 +1,5 @@
 import { buildMessages } from './index.js';
+import { visibleSocialState } from './visible-social.js';
 
 export const GROUNDED_PROMPT_VERSION = 'npc-grounded-v3';
 
@@ -15,7 +16,7 @@ export function buildGroundedMessages(input) {
       if (!name(item.actorId) || !name(item.targetId) || typeof item.action !== 'string' || !item.action.trim()) throw new Error('Invalid interaction participants');
       return `${item.actorId === input.npc.id ? '내가' : '상대가'} ${item.targetId === input.npc.id ? '나에게' : '상대에게'} 한 일: ${item.action}`;
     });
-  const social = input.socialState;
+  const social = visibleSocialState(input.socialState, input.npc.id);
   const schedule = social ? [
     `처음 합의했던 시간=${social.originalAgreement.time}, 장소=${social.originalAgreement.place}.`,
     `내가 현재 믿는 시간=${social.belief.time}, 그 믿음의 출처=${social.belief.source}.`,
