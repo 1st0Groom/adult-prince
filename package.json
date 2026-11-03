@@ -10,7 +10,8 @@
     "eval:story": "node scripts/evaluate-personality-story.mjs",
     "eval:grounding": "node scripts/evaluate-grounding.mjs",
     "eval:facts": "node scripts/evaluate-fact-routing.mjs",
-    "eval:training": "node scripts/evaluate-training.mjs"
+    "eval:training": "node scripts/evaluate-training.mjs",
+    "eval:daily": "node scripts/evaluate-npc-daily.mjs"
   },
   "engines": {
     "node": ">=22"

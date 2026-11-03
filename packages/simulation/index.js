@@ -27,6 +27,10 @@ export function applyAction(state, action) {
     integer(action.at, 'appointment time');
     if (action.at <= next.minute || !action.id || !action.place || next.appointments.some(item => item.id === action.id)) throw new Error('Invalid appointment');
     next.appointments.push({ id: action.id, npcId: action.npcId, at: action.at, place: action.place, status: 'pending' });
+  } else if (action.type === 'npc_activity') {
+    npc(action.npcId);
+    if (typeof action.detail !== 'string' || !action.detail.trim() || !Array.isArray(action.observers)) throw new Error('Invalid NPC activity');
+    for (const id of action.observers) npc(id);
   } else if (action.type === 'important_event') {
     if (typeof action.detail !== 'string' || !action.detail.trim() || !Array.isArray(action.observers)) throw new Error('Invalid event');
     for (const id of action.observers) npc(id);
@@ -35,6 +39,10 @@ export function applyAction(state, action) {
   event = { id: `event-${next.events.length + 1}`, minute: next.minute, type: action.type, detail: action.detail ?? action.activityId ?? action.place ?? '' };
   next.events.push(event);
   if (action.type === 'important_event') for (const id of new Set(action.observers)) remember(id, event, 'observed');
+  if (action.type === 'npc_activity') {
+    remember(action.npcId, event, 'experienced');
+    for (const id of new Set(action.observers)) if (id !== action.npcId) remember(id, event, 'observed');
+  }
   if (action.type === 'appointment') remember(action.npcId, event, 'agreed');
   return next;
 }
