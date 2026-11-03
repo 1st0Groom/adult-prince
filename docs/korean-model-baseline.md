@@ -3658,3 +3658,14 @@ NPC가 스스로 한 활동을 게임 이벤트로 기록하고, 당사자는 �
 - held-05 / career
 - 플레이어: 반복 점검은 지루했지만 문제 찾는 건 재밌었어요.
 - NPC: 그렇군요! 반복 업무는 지루할 수 있지만, 문제를 찾아내는 과정은 생각보다 흥미로울 수 있어요. 그게 왜 재밌는지 궁금해지네요. 예를 들어, 어떤 문제를 발견했는지, 그 문제를 해결할 때 어떤 느낌이 들었는지 알려주실 수 있나요?    그리고 중요한 건, 지루한 반복이 문제를 찾는 데 도움이 되는 순간이 있을 수 있다는 점이에요
+
+
+## 별도 GPU 학습 환경과 카나나 실행 점검
+
+2026-11-03, 기존 파이썬과 분리해 `work/training-venv`에 GPU 학습 환경을 만들었다. Windows, Python 3.13.7, RTX 3070 8GB에서 PyTorch 2.11.0+cu128, Transformers 4.57.6, PEFT 0.21.2, datasets 4.4.1, bitsandbytes 0.50.2, accelerate 1.15.0을 설치했다. `pip check`는 충돌이 없었다. GPU 역전파, 4비트 연산, 작은 무작위 언어 모델의 LoRA 한 단계가 모두 실행됐다.
+
+Transformers 5.22.1에서는 카나나의 원본 구조 설정을 검증하는 과정에서 불러오기가 실패했다. 원본 모델 설정을 변경하지 않고 Transformers 4.57.6과 호환되는 datasets로 조정해 해결했다. 실제 카나나 원본 `kakaocorp/kanana-1.5-2.1b-instruct-2505`, revision `7df4bc35ccd610e451809d7106e1c3cf82bfd44c`를 프로젝트의 무시되는 `work/models`에 내려받아 4비트로 불러왔다. 카나나는 최종 선정 모델이 아니며 GPU 학습 가능성을 먼저 확인한 후보이다.
+
+가상 예시 `train-01` 한 개, 최적화 한 단계의 점검에서 92개 입력 토큰 중 응답 24개만 손실 계산에 포함했고, 983,040개 학습 가능 어댑터 파라미터가 실제 갱신되었다. PyTorch가 보고한 최대 할당량은 약 2,436.4 MiB이다. 어댑터는 무시되는 `work/training-smoke`에 저장했다. 이는 환경 연결 시험이지 품질 학습이나 서비스용 모델이 아니며 전체 GPU 점유량·실제 학습 시 메모리·품질 향상은 입증하지 않는다.
+
+[PyTorch 설치 안내](https://pytorch.org/get-started/locally/)와 [bitsandbytes 설치 안내](https://huggingface.co/docs/bitsandbytes/installation)를 참고했다. 재현을 위해 별도 환경에서 `torch==2.11.0+cu128`을 PyTorch CUDA 12.8 인덱스에서 먼저 설치하고 `config/training-requirements.txt`의 직접 의존성을 설치한 후 `scripts/check-training-env.py`로 점검할 수 있다. 각 모델의 원본 가중치·라이선스 및 실제 학습 데이터는 따로 검토해야 한다.

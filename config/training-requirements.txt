@@ -1,0 +1,6 @@
+# Direct dependencies verified on Windows/Python 3.13 after installing CUDA PyTorch.
+transformers==4.57.6
+peft==0.21.2
+datasets==4.4.1
+accelerate==1.15.0
+bitsandbytes==0.50.2
