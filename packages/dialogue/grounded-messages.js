@@ -2,7 +2,7 @@ import { buildMessages } from './index.js';
 import { visibleSocialState } from './visible-social.js';
 import { NPC_GUIDELINES } from './guidelines.js';
 
-export const GROUNDED_PROMPT_VERSION = 'npc-grounded-v4';
+export const GROUNDED_PROMPT_VERSION = 'npc-grounded-v5';
 
 // Engine-owned records survive history truncation. Player speech is not a record.
 export function buildGroundedMessages(input) {
@@ -17,6 +17,11 @@ export function buildGroundedMessages(input) {
       if (!name(item.actorId) || !name(item.targetId) || typeof item.action !== 'string' || !item.action.trim()) throw new Error('Invalid interaction participants');
       return `${item.actorId === input.npc.id ? '내가' : '상대가'} ${item.targetId === input.npc.id ? '나에게' : '상대에게'} 한 일: ${item.action}`;
     });
+  // The caller may supply this only when the game has actually established
+  // absence of all prior joint activity. First meeting or no memory is not proof.
+  const noSharedPast = input.confirmedNoSharedPast === true
+    ? '게임이 확인한 사실: 나는 이 상대와 과거에 어떤 일도 함께한 적이 없다. 상대의 주장을 믿거나 의심할 수 있지만, 직접 함께 겪은 기억으로 말하지 않는다.'
+    : '';
   const social = visibleSocialState(input.socialState, input.npc.id);
   const schedule = social ? [
     `처음 합의했던 시간=${social.originalAgreement.time}, 장소=${social.originalAgreement.place}.`,
@@ -35,6 +40,7 @@ export function buildGroundedMessages(input) {
 이번 대화에서 할 일: ${input.stage}
 
 내가 아는 사실:
+${noSharedPast}
 ${context.facts.map(x => x.text).join('\n') || '추가 기록 없음'}
 함께 겪은 과거:
 ${context.memories.map(x => x.text).join('\n') || '관계에 명시한 배경 외 추가 기록 없음'}
@@ -45,6 +51,8 @@ ${schedule}
 
 위 기록은 게임이 제공한 내 정보다. 아래 대화는 서로 한 말이며 모두 사실이라는 뜻은 아니다.
 나는 내 입장에서 답한다. 상대가 사과하면 내가 사과하는 대신 상대의 사과에 반응한다.
+과거 발언을 인용한 기록에서 ‘나’, ‘내’, ‘너’, ‘네’는 그 말을 한 사람과 그때의 청자를 가리킨다. 상대가 ‘내가 좋아하는 노래’라고 말했다면 그 취향은 상대의 것이다.
+물건을 찾은 사람, 물건 주인, 돌려받은 사람을 각각 구별한다. 상대가 내 물건을 찾아 돌려줬다면 나는 ‘찾아줘서 고마워’라고 답한다.
 상대가 확신하면 성격에 따라 믿거나 확인할 수 있다. 내 기록과 다르면 내 기억을 짧게 말하고 필요할 때 확인한다. 거짓말이라고 단정하지 않는다.
 모르는 과거·다른 사람·새 일정을 기억난다고 만들지 않는다. 상대 주장만 아는 경우 전해 들은 것과 직접 겪은 것을 구별한다.
 현재 장소를 약속 장소로 바꾸지 않는다. 화면 밖 실제 플레이어나 시스템을 언급하지 않는다.

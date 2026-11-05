@@ -1,4 +1,5 @@
 import { getNpcContext } from './index.js';
+import { describeReturnedItem } from './korean-particles.js';
 
 // Convert the chosen NPC's saved event records, not the global event log.
 export function npcDialogueMemories(state, npcId) {
@@ -7,8 +8,9 @@ export function npcDialogueMemories(state, npcId) {
     const days = Math.floor(state.minute / 1440) - Math.floor(memory.minute / 1440);
     const when = days === 0 ? '오늘' : days === 1 ? '어제' : `${days}일 전`;
     const time = `${String(Math.floor((memory.minute % 1440) / 60)).padStart(2, '0')}:${String(memory.minute % 60).padStart(2, '0')}`;
-    const kind = memory.channel === 'experienced' ? '내가 직접 한 일' : memory.channel === 'observed' ? '내가 본 일' : '내가 합의한 일';
-    return { id: memory.eventId, text: `${when} ${time}에 ${kind}: ${memory.detail}`, knownBy: [npcId] };
+    const kind = memory.channel === 'experienced' ? '내가 직접 한 일' : memory.channel === 'participated' ? '내가 직접 겪은 일' : memory.channel === 'observed' ? '내가 본 일' : '내가 합의한 일';
+    const detail = memory.interaction?.kind === 'found_item_returned' ? describeReturnedItem(memory.interaction.item) : memory.detail;
+    return { id: memory.eventId, text: `${when} ${time}에 ${kind}: ${detail}`, knownBy: [npcId], ...(memory.interaction ? { interaction: structuredClone(memory.interaction) } : {}) };
   });
 }
 

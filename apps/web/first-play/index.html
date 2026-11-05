@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#273734">
+  <title>어른왕자 · 처음 해 보는 일</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main id="game" data-scene="street" aria-label="어른왕자 첫 체험">
+    <div class="sky" aria-hidden="true"></div>
+    <canvas id="world" aria-label="일인칭 게임 화면"></canvas>
+    <div class="edge" aria-hidden="true"></div>
+    <div id="world-labels" aria-hidden="true"></div>
+
+    <header id="hud" hidden>
+      <div class="chapter">
+        <span class="chapter-number" aria-hidden="true">01</span>
+        <div><p>어른왕자</p><strong id="location">집 앞 골목</strong></div>
+      </div>
+      <div class="hud-actions">
+        <button id="open-phone" class="hud-button" type="button" aria-label="휴대폰 열기">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="6" y="2.8" width="12" height="18.4" rx="2"/><path d="M10 5.6h4m-3 12.8h2"/></svg>
+          <span id="clock">1일차 07:00</span>
+        </button>
+        <button id="sound" class="hud-button icon-only" type="button" aria-label="소리 켜기" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 10h4l4-4v12l-4-4H4zM16 9l5 6m0-6-5 6"/></svg>
+        </button>
+      </div>
+    </header>
+    <div id="objective" class="objective" hidden>
+      <span class="objective-dot" aria-hidden="true"></span>
+      <span id="objective-text"></span>
+    </div>
+    <div id="reticle" class="reticle" hidden aria-hidden="true"></div>
+    <button type="button" id="interact" class="interact" hidden>
+      <kbd>E</kbd><span></span>
+    </button>
+    <aside id="controls" class="controls" hidden aria-label="조작 방법">
+      <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 이동</span>
+      <span><kbd>←</kbd><kbd>→</kbd> / 드래그 시점</span>
+      <span><kbd>P</kbd> 휴대폰</span>
+    </aside>
+    <p id="notice" class="notice" role="status"></p>
+
+    <section id="welcome" class="welcome" aria-labelledby="welcome-title">
+      <div class="welcome-copy">
+        <p class="wordmark"><span></span> 어른왕자</p>
+        <p class="eyebrow">첫 번째 이야기 <span>01</span></p>
+        <h1 id="welcome-title">처음 해<br>보는 일<span>.</span></h1>
+        <p class="synopsis">새 학기가 시작된 아침.<br>골목 끝에서 민서가 기다리고 있다.</p>
+        <div class="welcome-actions">
+          <button id="start" class="primary" type="button">골목으로 나가기 <span aria-hidden="true">→</span></button>
+          <button id="resume" class="secondary" type="button" hidden>저장한 곳에서 이어하기</button>
+        </div>
+        <p class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 이동 <span></span> <kbd>E</kbd> 대화·살펴보기</p>
+        <p id="boot-error" class="boot-error" role="alert" hidden></p>
+      </div>
+      <p class="place-caption"><span></span> 첫날 아침 · 해솔동</p>
+    </section>
+
+    <dialog id="panel" aria-labelledby="panel-title" aria-describedby="panel-text">
+      <div class="panel-top">
+        <p id="panel-tag" class="eyebrow"></p>
+        <form method="dialog"><button class="close" type="submit" aria-label="닫기">×</button></form>
+      </div>
+      <h2 id="panel-title"></h2>
+      <div id="panel-detail" hidden></div>
+      <p id="panel-text" aria-live="polite"></p>
+      <div id="choices" class="choices"></div>
+      <form id="chat" class="chat" hidden>
+        <label class="sr-only" for="utterance">민서에게 할 말</label>
+        <input id="utterance" name="utterance" maxlength="280" autocomplete="off" placeholder="민서에게 할 말">
+        <button type="submit" class="secondary">보내기 <span aria-hidden="true">↵</span></button>
+      </form>
+    </dialog>
+  </main>
+  <script type="module" src="/game.js"></script>
+</body>
+</html>

@@ -2,6 +2,10 @@ import { createNpcView } from './npc-view.js';
 // Engine-provided answer cards. These are NPC-visible, not the entire world state.
 const intents = ['other', 'loan-origin', 'loan-holder', 'current-agreement', 'original-vs-belief', 'claimed-shared-past'];
 export const FACT_ROUTER_VERSION = 'npc-fact-router-v3';
+const currentTemperature = /^(?:오늘|지금|현재)(?:은|이)?(?:(?:날씨|기온)(?:는|이|가)?(?:어때(?:요)?|어떤가요|어떻습니까)[?？]?|(?:더워|추워|선선해|쌀쌀해)(?:요)?[?？]|(?:덥|춥|선선하|쌀쌀하)(?:니|나요|습니까)[?？]?)$/;
+const temperatures = new Map([
+  ['hot', '더워'], ['mild', '온화해'], ['cool', '선선해'], ['cold', '추워'],
+]);
 const particle = (word, closed, open) => {
   const point = word.codePointAt(word.length - 1);
   return point >= 0xac00 && point <= 0xd7a3 ? ((point - 0xac00) % 28 ? closed : open) : '';
@@ -54,8 +58,8 @@ export function renderFactAnswer(input, intent) {
   // Only use the first-meeting correction when the current words actually refer
   // to a shared past; otherwise let the normal conversation continue.
   const pastClaim = /기억|생각나|지난|예전|작년|어제|전에/.test(input.playerText ?? '') && /우리|같이|함께|너랑|저랑/.test(input.playerText ?? '');
-  if (intent === 'claimed-shared-past' && input.firstMeeting === true && pastClaim) {
-    return polite ? '저는 오늘 처음 뵙는데, 혹시 다른 분이랑 헷갈리신 거 아니에요?' : '우린 오늘 처음 만났는데, 다른 사람이랑 헷갈린 거 아니야?';
+  if (intent === 'claimed-shared-past' && input.confirmedNoSharedPast === true && pastClaim) {
+    return polite ? '저희는 전에 함께한 적이 없는데, 다른 분과 헷갈리신 걸까요?' : '우린 전에 함께한 적이 없는데, 다른 사람이랑 헷갈린 걸까?';
   }
   const visible = record => record?.sensitive !== true && Array.isArray(record?.knownBy) && record.knownBy.includes(npc.id);
   if (intent === 'loan-origin' || intent === 'loan-holder') {
@@ -99,6 +103,16 @@ export function renderFactAnswer(input, intent) {
 }
 
 export async function generateFactAwareTurn(input, { classify, freeDialogue }) {
+  if (['polite', 'casual'].includes(input.speech) && currentTemperature.test(input.playerText?.replace(/\s+/g, ''))) {
+    const record = createNpcView(input).weatherKnowledge;
+    const temperature = temperatures.get(record?.temperature);
+    const polite = input.speech === 'polite';
+    const text = temperature ? `지금은 ${temperature}${polite ? '요' : ''}.`
+      : polite ? '지금 날씨가 어떤지는 잘 모르겠어요.' : '지금 날씨가 어떤지는 잘 모르겠어.';
+    return { text, mode: temperature ? 'record-answer' : 'record-unknown',
+      route: { intent: 'current-temperature', valid: true, source: 'game',
+        ...(temperature && typeof record.id === 'string' ? { evidenceId: record.id } : {}) } };
+  }
   // The caller may pass the engine's explicit ambiguous-reference result.
   // A missing match alone is not evidence that the player is wrong.
   if (input.memoryResolution === 'ambiguous') {

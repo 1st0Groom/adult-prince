@@ -15,3 +15,16 @@ test('Free dialogue adapter receives only visible records and no unrelated state
   }});
   assert.equal(result.text,'안녕!');assert.deepEqual(input,before);
 });
+
+test('Game-confirmed shared-history absence survives routing to the free dialogue view', async () => {
+  const input={npc:{id:'n',name:'수아'},player:{id:'p',name:'현우'},speech:'polite',playerText:'지난달에 제 이사를 도와주셔서 고마웠어요.',
+    personality:'차분하다',relationship:'오늘 처음 대면',stage:'자연스럽게 응답한다',scene:{place:'학교'},
+    facts:[],memories:[],history:[],interactions:[],allowedChoices:[],confirmedNoSharedPast:true};
+  const result=await generateFactAwareTurn(input,{classify:async()=>'{"index":0}',freeDialogue:async view=>{
+    assert.equal(view.confirmedNoSharedPast,true);
+    const {buildGroundedMessages}=await import('./grounded-messages.js');
+    assert.match(buildGroundedMessages(view)[0].content,/과거에 어떤 일도 함께한 적이 없다/);
+    return '다른 분과 헷갈리신 걸까요?';
+  }});
+  assert.equal(result.mode,'free-dialogue');
+});

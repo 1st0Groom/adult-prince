@@ -41,3 +41,21 @@ test('Both prompt builders exclude another NPC’s or sensitive social state', (
     assert.equal(JSON.stringify(build({...value,socialState:{knownBy:['jiwoo'],state}})).includes('비밀 장소'),true);
   }
 });
+
+test('Only explicit game-confirmed absence reaches free dialogue; first meeting alone is not absence', async () => {
+  const {createNpcView} = await import('./npc-view.js');
+  const value=input();value.firstMeeting=true;
+  let message=buildGroundedMessages(createNpcView(value))[0].content;
+  assert.doesNotMatch(message,/게임이 확인한 사실: 나는 이 상대와 과거에 어떤 일도/);
+  for(const flag of [false,undefined,'true',1]) {
+    value.confirmedNoSharedPast=flag;
+    message=buildGroundedMessages(createNpcView(value))[0].content;
+    assert.doesNotMatch(message,/게임이 확인한 사실: 나는 이 상대와 과거에 어떤 일도/);
+  }
+  value.confirmedNoSharedPast=true;
+  const view=createNpcView(value);
+  assert.equal(view.confirmedNoSharedPast,true);
+  message=buildGroundedMessages(view)[0].content;
+  assert.match(message,/상대와 과거에 어떤 일도 함께한 적이 없다/);
+  assert.match(message,/상대의 주장을 믿거나 의심할 수 있지만/);
+});
